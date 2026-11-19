@@ -89,6 +89,17 @@ def main():
     (ROOT / "index.html").write_text(jeu, encoding="utf-8")
     print(f"index.html : {len(jeu.encode('utf-8'))/1024:.0f} Ko · moteur {version} ({fichier}) · {len(js)} modules")
 
+    # Variante « contenu seul » (sans <html>/<head>/<body>), pour les hébergeurs qui enveloppent la page eux-mêmes :
+    #   python3 tools/build.py --contenu chemin/sortie.html
+    if "--contenu" in sys.argv:
+        sortie = pathlib.Path(sys.argv[sys.argv.index("--contenu") + 1])
+        titre = re.search(r"<title>.*?</title>", jeu, re.S).group(0)
+        police = re.search(r'<link rel="stylesheet" href="https://fonts[^>]+>', jeu).group(0)
+        style = re.search(r"<style>.*?</style>", jeu, re.S).group(0)
+        corps = re.search(r"<body>(.*)</body>", jeu, re.S).group(1)
+        sortie.write_text("\n".join([titre, police, style, corps]), encoding="utf-8")
+        print(f"{sortie} : contenu seul, {sortie.stat().st_size/1024:.0f} Ko")
+
     gal = SRC / "galerie.tpl.html"
     if gal.exists():
         dessin = [(n, c) for n, c in js if n[:2] < "40"]  # outils, décors, sprites, rendu

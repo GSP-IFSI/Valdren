@@ -3,7 +3,7 @@ VG.ui = (() => {
   const { clamp } = VG.u, el = id => document.getElementById(id), ic = n => `<svg class="ic"><use href="#i-${n}"/></svg>`;
   let jeu, modeCourant = "titre", vuLog = 0, cartoucheT = 0;
 
-  function init() { jeu = el("jeu"); format(); addEventListener("resize", () => { clearTimeout(init.t); init.t = setTimeout(() => { format(); VG.main.rendre({ garder: true }); }, 120); }); }
+  function init() { jeu = el("jeu"); format(); addEventListener("resize", () => { clearTimeout(init.t); init.t = setTimeout(() => { format(); const f = document.activeElement; if (f && f.matches && f.matches("input,textarea")) return; if (VG.main.enJeu) VG.main.rendre({ garder: true }); else VG.main.versTitre(); }, 120); }); }
   // Format d'écran : portrait (téléphone tenu droit), paysage ; « bas » = paysage de faible hauteur (téléphone couché).
   function format() { const w = innerWidth, h = innerHeight, portrait = w < h * .95 || w < 600; jeu.classList.toggle("f-portrait", portrait); jeu.classList.toggle("f-paysage", !portrait); jeu.classList.toggle("f-bas", !portrait && h < 540); return portrait; }
   const portrait = () => jeu.classList.contains("f-portrait");
@@ -13,7 +13,7 @@ VG.ui = (() => {
   function hud() { if (!S.origine) return; const pm = pvMax(), r = clamp(S.pv / pm, 0, 1);
     el("h-niv").textContent = S.niv; el("h-pv").style.width = r * 100 + "%"; el("h-pv").parentNode.classList.toggle("bas", r < .35); el("h-xp").style.width = clamp(S.xp / xpNeed(S.niv), 0, 1) * 100 + "%"; el("h-pvt").textContent = S.pv + " / " + pm;
     const nuit = S.moment === 1, hj = el("h-jour"); hj.classList.toggle("nuit", nuit);
-    hj.innerHTML = ic(nuit ? "lune" : "soleil") + (S.post ? `<span>Après · j <b>${S.jour}</b></span>` : `<span>Jour <b>${Math.min(S.jour, JOURS)}</b>/${JOURS}</span><span class="fil"><i style="width:${clamp(S.jour / JOURS, 0, 1) * 100}%"></i></span>`);
+    hj.innerHTML = ic(nuit ? "lune" : "soleil") + (S.post ? `<span><em>Après · </em>j <b>${S.jour}</b></span>` : `<span><em>Jour </em><b>${Math.min(S.jour, JOURS)}</b>/${JOURS}</span><span class="fil"><i style="width:${clamp(S.jour / JOURS, 0, 1) * 100}%"></i></span>`);
     el("h-stats").innerHTML = `<span class="r" title="Renom : ${renomNom(S.renom)}">${ic("etoile")}${S.renom}<em>renom</em></span><span class="o" title="Or">${ic("piece")}${S.or || 0}</span><span class="v" title="Varek, à votre dernière visite">${ic("tour")}${S.varek.vu < 0 ? "?" : S.varek.vuNiv}<em>Varek</em></span>`;
     const neufs = Math.max(0, S.log.length - vuLog), p = el("h-new"); p.hidden = !neufs || vuLog === 0; p.textContent = neufs > 9 ? "9+" : neufs; }
 

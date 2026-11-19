@@ -258,7 +258,7 @@
       frappe: { ex: 20, ey: 3, hx: 12, hy: -2, cou: -1.02, couL: .06, tete: .95, gueule: 0, a1x: 28, a1y: -18, a2x: 32, a2y: -8, r1x: -6, r2x: -8 },
       charge: { ex: -5, ey: 4, hx: -4, hy: 5, arc: 2, cou: -.62, tete: .62, gueule: 0 },
       garde: { cou: -.55, tete: .62, gueule: 0, ex: -5, ey: 3 }, touche: { gueule: .6 } },
-    larg: 336, haut: 206, sous: 12, ech: .3, ombreK: .18 };
+    larg: 364, haut: 224, sous: 12, ech: .3, ombreK: .17 };
 
   // lynx des Failles : ramassé sur ses épaules, l'arrière-train haut, prêt à bondir
   const LYNX = { L: 46, hE: 46, hH: 50, rR: [6, 9], rH: [8.5, 13], rM: [7, 14], rE: [8.5, 18], creux: 1, croupe: 7, croupeY: 6, pl: 8.6, herisRepos: .2,

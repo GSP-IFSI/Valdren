@@ -76,7 +76,7 @@ VG.combat = (() => {
     // ce qu'il prépare
     let bulle = ""; if (!dr && c.pv > 0) { const vu = tellVisible(c), I = vu ? INTENT[c.intent] : null; bulle = `<div class="bulle ${vu ? "vu i-" + c.intent : "cache"}">${ic(I ? I[0] : "doute")}<div><b>${I ? I[1] : "Intention cachée"}</b><span>${vu ? "Réponse sûre : " + esc(PARADE[c.intent]) : "Observer révèle ses coups"}</span></div></div>`; }
     const extra = lect ? [...lect.children].filter((x, i) => dr || i >= 2).map(x => x.outerHTML).join("") : "";
-    ui.el("c-lecture").innerHTML = bulle + (extra ? `<div class="note">${dr && lect ? lect.innerHTML : extra}</div>` : "");
+    ui.el("c-lecture").innerHTML = bulle + (extra ? `<div class="note${dr ? " dr" : ""}">${dr && lect ? lect.innerHTML : extra}</div>` : "");
     // commandes
     const B = boutons.map(b => ({ a: b.dataset.a, k: b.dataset.a.slice(2), t: (b.querySelector(".t") || {}).textContent || "", d: (b.querySelector(".d") || {}).innerHTML || "", c: (b.querySelector(".c") || {}).textContent || "", off: b.disabled }));
     const coeur = ["att", "def", "esq", "obs"], princ = B.filter(b => coeur.includes(b.k)), autres = B.filter(b => !coeur.includes(b.k));

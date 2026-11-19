@@ -118,7 +118,7 @@ VG.main = (() => {
     if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register("sw.js").catch(() => {});
     window.addEventListener("error", e => console.error("Valdren :", e.message)); }
 
-  return { demarrer, rendre, action, avant, apres, entrer, get enJeu() { return enJeu; } };
+  return { demarrer, rendre, action, avant, apres, entrer, versTitre, get enJeu() { return enJeu; } };
 })();
 VG.ui.rafraichirScene = () => VG.main.rendre({ garder: true });
 VG.main.demarrer();

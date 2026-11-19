@@ -62,7 +62,7 @@ button:focus-visible,.champ:focus-visible{outline:2px solid var(--gold);outline-
 .jauge.xp{height:4px}.jauge.xp i{background:linear-gradient(90deg,#b98f43,#f0d896)}
 .hud-heros .pvtxt{font-size:.74rem;color:var(--muted);white-space:nowrap}
 .hud-jour{margin-left:auto;display:flex;align-items:center;gap:7px;height:38px;padding:0 12px;border-radius:19px;border:1px solid var(--line2);background:var(--verre);font-family:var(--mono);font-size:.8rem;white-space:nowrap;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.hud-jour b{color:var(--gold);font-weight:500;font-size:.95rem}
+.hud-jour b{color:var(--gold);font-weight:500;font-size:.95rem}.hud-jour em{font-style:normal}
 .hud-jour .ic{width:17px;height:17px;color:var(--gold)}.hud-jour.nuit .ic{color:var(--night)}
 .hud-jour .fil{width:46px;height:4px;border-radius:2px;background:#22302a;overflow:hidden}.hud-jour .fil i{display:block;height:100%;background:var(--gold)}
 .hud-stats{display:flex;gap:6px;margin-right:auto}
@@ -70,7 +70,8 @@ button:focus-visible,.champ:focus-visible{outline:2px solid var(--gold);outline-
 .hud-stats .ic{width:15px;height:15px}.hud-stats .r .ic{color:var(--steel)}.hud-stats .o .ic{color:var(--gold)}.hud-stats .v .ic{color:var(--ember)}
 .hud-stats em{font-style:normal;color:var(--muted);font-size:.72rem}
 .pastille{position:absolute;top:-2px;right:-2px;min-width:16px;height:16px;border-radius:8px;background:var(--ember);color:#1a0d08;font:600 .66rem var(--mono);display:grid;place-items:center;padding:0 4px}
-.f-portrait .hud-stats em,.f-portrait .hud-jour .fil{display:none}
+.f-portrait .hud-stats em,.f-portrait .hud-jour .fil,.f-portrait .hud-jour em{display:none}
+.f-portrait .hud-heros .jauges{width:clamp(30px,9vw,60px)}.hud-stats{min-width:0}.hud-heros{flex:none}.hud-b.rond{flex:none}
 .f-portrait .hud-stats span{padding:0 7px;gap:3px;font-size:.76rem;height:32px}.f-portrait .hud-jour{padding:0 8px;height:32px;font-size:.74rem}
 .f-portrait .hud-heros .pvtxt{display:none}.f-portrait .hud-b{height:34px}.f-portrait .hud-b.rond{width:34px}.f-portrait .hud-heros .niv{width:26px;height:26px;font-size:.9rem}
 .f-portrait #hud{gap:5px}
@@ -228,12 +229,13 @@ table.cmp td{padding:6px 12px 6px 0;border-top:1px solid var(--line);white-space
 /* ---------- écran-titre ---------- */
 #titre{position:absolute;inset:0;z-index:35;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:max(20px,var(--sat)) 18px max(20px,var(--sab));background:radial-gradient(ellipse at 50% 30%,rgba(5,8,7,0) 30%,rgba(5,8,7,.55) 100%)}
 .m-titre #titre{display:flex}
-.t-bloc{display:flex;flex-direction:column;align-items:center;gap:10px;max-width:640px;animation:monte 1.1s .15s cubic-bezier(.2,.8,.2,1) both}
+.t-bloc{display:flex;flex-direction:column;align-items:center;gap:10px;max-width:640px;height:100%;padding:clamp(8px,7vh,70px) 0 clamp(8px,5vh,48px);animation:monte 1.1s .15s cubic-bezier(.2,.8,.2,1) both}
 .t-sur{font-family:var(--mono);font-size:clamp(.66rem,1.8vw,.82rem);letter-spacing:.38em;text-transform:uppercase;color:var(--gold);text-shadow:0 2px 12px #000}
 #titre h1{font-size:clamp(2.6rem,10vw,5.6rem);line-height:.98;font-weight:500;color:#f4ead2;text-shadow:0 4px 30px rgba(0,0,0,.85),0 0 60px rgba(232,130,90,.25)}
 #titre h1 span{background:linear-gradient(180deg,#f8e3ac,#d09a45);-webkit-background-clip:text;background-clip:text;color:transparent;font-style:italic}
 .t-sous{font-family:var(--display);font-style:italic;font-size:clamp(1rem,3vw,1.3rem);color:#d6dccf;text-shadow:0 2px 12px #000}
-.t-btns{display:flex;flex-direction:column;gap:10px;margin-top:clamp(14px,5vh,44px);width:min(100%,320px)}
+.t-btns{display:flex;flex-direction:column;gap:10px;margin-top:auto;width:min(100%,320px)}
+.f-bas .t-btns{flex-direction:row;width:auto}.f-bas #titre h1{font-size:clamp(2rem,13vh,3.4rem)}.f-bas .t-bloc{padding:6px 0;gap:4px}
 .t-btns .btn{font-size:1.05rem;padding:13px 22px}
 .t-btns .btn.ghost{background:rgba(8,12,10,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .t-pied{font-family:var(--mono);font-size:.66rem;color:#9aa89f;margin-top:10px;text-shadow:0 1px 6px #000}
@@ -336,6 +338,8 @@ table.cmp td{padding:6px 12px 6px 0;border-top:1px solid var(--line);white-space
 .f-portrait .p-nom b{font-size:.86rem;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.1}
 .f-portrait .p-nom{min-height:30px}
 .f-portrait #c-lecture .note{font-size:.7rem;padding:4px 8px}
+.f-portrait #c-lecture .note.dr span+span,.f-bas #c-lecture .note.dr span+span{display:none}
+.f-portrait .p-bas{flex-wrap:wrap;gap:2px 6px}.f-portrait .p-bas .mono{font-size:.7rem;white-space:nowrap}
 .f-portrait .cmd.p .d{-webkit-line-clamp:3}
 .f-portrait #c-lecture{top:calc(34px + var(--sat) + 86px);max-width:72%}
 .f-portrait .bulle{padding:5px 10px 5px 7px}.f-portrait .bulle .ic{width:22px;height:22px}.f-portrait .bulle b{font-size:.82rem}.f-portrait .bulle span{font-size:.7rem}
@@ -4481,7 +4485,7 @@ VG.decors = (() => {
                 : { haut: "#241618", milieu: "#743628", bas: "#d98448", loin: "#4c2a28", bati: "#150b0a", sol: "#2b1a15", pre: "#070404", brume: "#dc9258", feu: "#ffb060" };
     B.lum = { col: "#ffa45a", dir: 1, amb: n ? "#1c0d0e" : "#2c1614", brume: c.brume };
     // ciel rouge sale, astre étouffé par la fumée
-    let ctx = O.ciel(B, { haut: c.haut, milieu: c.milieu, bas: c.bas, astre: n ? [.13, .2, 2.6] : [.16, .3, 4], astreCol: n ? "#c9a090" : "#ffb478", halo: n ? "#7a3024" : "#ff7a3a", nuageCol: n ? "#a04a26" : "#ffa868", nuageA: .2, horizon: .64, seed: 9 });
+    let ctx = O.ciel(B, { haut: c.haut, milieu: c.milieu, bas: c.bas, astre: n ? [.3, .17, 2.6] : [.31, .25, 4], astreCol: n ? "#c9a090" : "#ffb478", halo: n ? "#7a3024" : "#ff7a3a", nuageCol: n ? "#a04a26" : "#ffa868", nuageA: .2, horizon: .64, seed: 9 });
     const fxm = X(.635), wt = yS + E - E * 13, rsm = rng("panache"); G.glow(ctx, fxm, wt - E * 8, E * 70, "#ff6a2a", n ? .4 : .32);
     for (let i = 0; i < 16; i++) { const q = i / 15; G.glow(ctx, fxm + E * 4 - q * E * (70 + rsm.r(-8, 8)), wt - E * 12 - q * (wt - E * 12 - B.Y(-.05)) + rsm.r(-3, 3) * E, E * (9 + q * 30), "#120808", .5 - q * .14, "source-over"); }
     O.nuages(ctx, B, B.Y(-.04), B.Y(.3), "#0c0606", .55, 8, 44);
@@ -4499,17 +4503,17 @@ VG.decors = (() => {
     ctx.save(); ctx.globalCompositeOperation = "destination-out"; [[.2, .46, 3.4], [.36, .2, 2.7], [.1, .76, 2.3], [.47, .07, 1.5], [-.2, .3, 1.8]].forEach(([dx, dy, r], i) => { G.blob(ctx, fxm + hw * dx, wt - toit * dy, E * r, E * r * .8, i + 3, .35, 12); ctx.fill(); }); ctx.restore();
     ctx.strokeStyle = colB; ctx.lineCap = "round"; ctx.lineWidth = E * .6; [.2, .46, .7].forEach(q => { ctx.beginPath(); ctx.moveTo(fxm + hw * .02, wt - toit * q); ctx.lineTo(fxm + hw * (.6 - q * .56), wt - toit * q + E * .6); ctx.stroke(); }); ctx.beginPath(); ctx.moveTo(fxm + hw * .22, wt); ctx.lineTo(fxm + hw * .2, wt - toit * .6); ctx.stroke();
     ctx.save(); ctx.globalCompositeOperation = "lighter"; [[-.27, .52, 2.6, 3.4], [.24, .52, 2.6, 3.4], [0, .26, 3.4, 6.8]].forEach(([dx, dy, w, h]) => { ctx.fillStyle = "#ffb050"; ctx.fillRect(fxm + hw * dx - E * w / 2, hb - hh * dy - E * h / 2, E * w, E * h); G.glow(ctx, fxm + hw * dx, hb - hh * dy, E * 8, "#ff8a3a", .6); }); ctx.restore();
-    [[.2, .44, 11], [.36, .16, 9], [.09, .76, 8], [-.2, .34, 6.4], [.5, 0, 5]].forEach(([dx, dy, h], i) => feux.push([fxm + hw * dx, wt - toit * dy + E, E * h, i * 1.9])); feux.push([fxm - hw * .27, hb - hh * .42, E * 3.4, 7], [fxm + hw * .24, hb - hh * .42, E * 3.8, 9], [X(.875) + E * 3, hb - E * 22, E * 3.6, 11]);
+    [[.2, .44, 7.6], [.36, .16, 6.4], [.09, .76, 6], [-.2, .34, 4.6], [.5, 0, 4]].forEach(([dx, dy, h], i) => feux.push([fxm + hw * dx, wt - toit * dy + E, E * h, i * 1.9])); feux.push([fxm - hw * .27, hb - hh * .42, E * 3.4, 7], [fxm + hw * .24, hb - hh * .42, E * 3.8, 9], [X(.875) + E * 3, hb - E * 22, E * 3.6, 11]);
     // palissade : debout à droite, éventrée devant la brèche
     O.palissade(ctx, X(.9), B.x1, hb + E, E * 13, colB, rh, E * 1.8);
     [[.8, -.5, 9], [.815, -.95, 11], [.835, -1.2, 8], [.852, -.72, 12], [.868, -1.38, 10], [.884, -1.5, 12]].forEach(([u, a, l]) => pieu(ctx, X(u), hb + E, E * l, a, E * 1.5, colB)); [[.735, -.12, 9], [.762, .1, 7]].forEach(([u, a, l]) => pieu(ctx, X(u), hb + E * .6, E * l, a, E * 1.4, colB));
     // le feu éclaire les murs voisins
-    eclaire(ctx, fxm + E * 3, wt - E * 4, E * 62, "#ff8438", n ? .5 : .4); G.glow(ctx, fxm + E * 3, wt - E * 5, E * 36, "#ff7a30", n ? .5 : .42); G.glow(ctx, fxm, hb - E * 4, E * 30, "#ffb060", .25);
+    eclaire(ctx, fxm + E * 3, wt - E * 4, E * 62, "#ff8438", n ? .5 : .4); G.glow(ctx, fxm + E * 3, wt - E * 9, E * 40, "#ff7a30", n ? .26 : .2);
     O.voile(ctx, B, yS - E * 14, yS + E * 2, c.brume, n ? .4 : .5); G.fog(ctx, B.x0, B.x1, yS + Uu * 4, Uu * 8, c.brume, .34, 47, 14);
-    B.dyn(.3, (x, t) => { const f = .78 + .22 * Math.sin(t * 6.7) * Math.sin(t * 2.9 + 1); G.glow(x, fxm + E * 3, wt - E * 5, E * 56, "#ff7a30", (n ? .2 : .15) * f); for (const q of feux) G.flamme(x, q[0], q[1], q[2], t, q[3]); });
-    B.part(.3, "fumee", { x: fxm - E * 5, y: wt - E * 40, w: E * 12, h: E * 30 }, { n: 34, col: "#1a100e", scale: E * .55, seed: "bf1", alpha: 2.2 });
+    B.dyn(.3, (x, t) => { const f = .78 + .22 * Math.sin(t * 6.7) * Math.sin(t * 2.9 + 1); G.glow(x, fxm + E * 3, wt - E * 8, E * 56, "#ff7a30", (n ? .13 : .1) * f); for (const q of feux) G.flamme(x, q[0], q[1], q[2], t, q[3]); });
+    B.part(.3, "fumee", { x: fxm - E * 8, y: wt - toit - E * 30, w: E * 16, h: E * 29 }, { n: 30, col: "#3a2018", scale: E * .5, seed: "bf1", alpha: 1.5 });
     B.part(.3, "braise", { x: fxm - E * 9, y: wt - E * 34, w: E * 22, h: E * 36 }, { n: 34, scale: Uu / 7, seed: "bb1" });
-    B.part(.3, "fumee", { x: X(.875), y: hb - E * 46, w: E * 5, h: E * 24 }, { n: 12, col: "#221614", scale: E * .4, seed: "bf2", alpha: 1.8 });
+    B.part(.3, "fumee", { x: X(.875), y: hb - E * 48, w: E * 6, h: E * 24 }, { n: 10, col: "#3a2420", scale: E * .36, seed: "bf2", alpha: 1.2 });
     // barricades de chariots renversés, bannière de la Guilde encore debout
     ctx = B.couche(.55); const rb = rng("barricade"), colC = mixc(c.bati, c.sol, .35), yB = B.Y(.835), mx = g0 + Uu * 22, my = B.Y(.2);
     G.ridge(ctx, { x0: B.x0, x1: B.x1, y: B.Y(.822), amp: Uu * 1.2, freq: 1.5, seed: 23, bottom: B.H, fill: G.lin(ctx, 0, B.Y(.8), 0, B.Y(.92), [[0, mixc(c.sol, c.brume, .4)], [1, mixc(c.sol, c.brume, .14)]]) });
@@ -4525,7 +4529,7 @@ VG.decors = (() => {
     // le sol piétiné
     ctx = B.couche(.78); G.ridge(ctx, { x0: B.x0, x1: B.x1, y: B.Y(.86), amp: Uu * 1.2, freq: 1.6, seed: 29, bottom: B.H, fill: G.lin(ctx, 0, B.Y(.84), 0, B.Y(1.08), [[0, mixc(c.sol, c.brume, .24)], [.3, c.sol], [1, mixc(c.sol, "#000000", .6)]]) });
     const rg = rng("bat-sol"); O.rochers(ctx, B.x0, B.x1, B.Y(.876), Uu * 1.1, mixc(c.sol, "#000000", .25), rg, 9);
-    for (let i = 0; i < 7; i++) { const x = lerp(B.x0, B.x1, rg()), a = -Math.PI / 2 + rg.r(-.5, .5), l = Uu * rg.r(3, 5); seg(ctx, x, B.Y(.875), x + Math.cos(a) * l, B.Y(.875) + Math.sin(a) * l, Math.max(1, Uu * .2), mixc(c.sol, "#000000", .35)); poly(ctx, [[x + Math.cos(a) * l, B.Y(.875) + Math.sin(a) * l], [x + Math.cos(a - .5) * l * .72, B.Y(.875) + Math.sin(a - .5) * l * .72], [x + Math.cos(a + .5) * l * .72, B.Y(.875) + Math.sin(a + .5) * l * .72]], mixc(c.sol, "#000000", .35)); }
+    for (let i = 0; i < 7; i++) { const x = lerp(B.x0, B.x1, rg()), a = -Math.PI / 2 + rg.r(-.5, .5), l = Uu * rg.r(3, 5); const fl = mixc(c.sol, "#000000", .35), y0 = B.Y(.875), ex = x + Math.cos(a) * l, ey = y0 + Math.sin(a) * l; seg(ctx, x, y0, ex, ey, Math.max(1, Uu * .2), fl); [.74, .88].forEach(q => [-1, 1].forEach(sg => seg(ctx, x + Math.cos(a) * l * q, y0 + Math.sin(a) * l * q, x + Math.cos(a) * l * (q + .14) + Math.cos(a + sg * 1.57) * Uu * .5, y0 + Math.sin(a) * l * (q + .14) + Math.sin(a + sg * 1.57) * Uu * .5, Math.max(1, Uu * .16), fl))); }
     B.sol = B.Y(.9);
     B.acteurs();
     // premier plan : lances, pieux, roue brisée ; fumée et braises qui traversent
@@ -4538,6 +4542,165 @@ VG.decors = (() => {
     B.part(1, "fumee", { x: B.x0, y: B.Y(.3), w: B.s.w * .8, h: B.Y(.95) - B.Y(.3) }, { n: 12, col: "#1c1210", scale: Uu * .7, seed: "bf3", alpha: 1.3 });
     B.part(1, "braise", { x: B.x0, y: B.Y(.1), w: B.x1 - B.x0, h: B.Y(.95) - B.Y(.1) }, { n: 46, scale: Uu / 6.5, seed: "bb2" });
     B.part(1, "cendre", { x: B.x0, y: 0, w: B.x1 - B.x0, h: B.Y(1) }, { n: 18, col: n ? "#8a6a5a" : "#d8b8a0", scale: Uu / 7.5 });
+  };
+
+  // ====================================================================================================
+  // La salle de la Guilde : pierre et bois, hautes bannières bleu acier, tableau des contrats, râtelier d'armes, table aux cartes.
+  const chope = (ctx, x, y, s, col) => { ctx.fillStyle = col; ctx.fillRect(x - s * .8, y - s * 2, s * 1.6, s * 2); ctx.strokeStyle = col; ctx.lineWidth = s * .3; ctx.beginPath(); ctx.arc(x + s * .9, y - s, s * .6, -1.3, 1.3); ctx.stroke(); ctx.fillStyle = rgba("#000000", .25); ctx.fillRect(x - s * .8, y - s * 1.65, s * 1.6, s * .2); };
+  D.guilde = B => { const n = B.nuit, Uu = B.U, R = repere(B, .8, .72), E = R.E, X = R.X, Y = R.Y, T = R.T, yF = B.Y(.8), mx = B.X(.5);
+    const c = n ? { mur: "#8f8c86", bois: "#6a5236", sol: "#86806f", amb: "#171b29", jour: "#86a6e2", noir: "#090a0e", pre: "#030305", feu: "#ffab5c", ban: "#3f6283", ban2: "#86b4d6", vit: ["#2c4478", "#35508c", "#28406c"], vitB: "#1c2e54" }
+                : { mur: "#a09a8c", bois: "#70573a", sol: "#8e8774", amb: "#35353d", jour: "#ffe8b4", noir: "#0e0e12", pre: "#060607", feu: "#ffb868", ban: "#4a7194", ban2: "#8fc3e8", vit: ["#fff2c8", "#ffe8ae", "#f4ecc4"], vitB: "#f2cf8c" };
+    B.lum = { col: n ? "#ffb878" : "#ffe6b4", dir: 1, amb: n ? "#141826" : "#2c2c34", brume: n ? "#5a5a6e" : "#b0a88e" };
+    let ctx = B.couche(.4); const feux = [], lustre = [];
+    pierres(ctx, B.x0, 0, B.x1, yF + 2, { col: c.mur, h: E * 6, seed: 41, v: .06 }); ctx.fillStyle = rgba("#000000", .16); ctx.fillRect(B.x0, Y(.62), B.x1 - B.x0, E * 1.1); ctx.fillStyle = rgba("#ffffff", .07); ctx.fillRect(B.x0, Y(.62) - E * .5, B.x1 - B.x0, E * .5);
+    dallage(ctx, B, yF, c.sol, { seed: 12, pas: 16, j: .32 });
+    // tapis d'apparat, fuyant vers le mur
+    const vy = yF - Uu * 46, kq = y => (y - vy) / (yF - vy), tap = (w, y0, y1, col) => poly(ctx, [[mx - w * kq(y0), y0], [mx + w * kq(y0), y0], [mx + w * kq(y1), y1], [mx - w * kq(y1), y1]], col);
+    tap(E * 30, yF + E * 1.2, B.H, "#6a5a3a"); tap(E * 28.6, yF + E * 1.8, B.H, "#3a5068"); tap(E * 24, yF + E * 3.4, B.H, "#32465c");
+    // tableau des contrats (à gauche) : planches, parchemins cloués, sceaux
+    const t0 = X(.065), t1 = X(.235), ty0 = Y(.29), ty1 = Y(.575), rc = rng("contrats");
+    ctx.fillStyle = ton(c.bois, -.45); ctx.fillRect(t0 - E * 1.4, ty0 - E * 1.4, t1 - t0 + E * 2.8, ty1 - ty0 + E * 2.8); planches(ctx, t0, ty0, t1, ty1, tonA(c.bois, .04), { l: E * 5, horiz: true, seed: 7, j: .22 });
+    ctx.fillStyle = ton(c.bois, -.3); ctx.fillRect(X(.1), ty0 - E * 6.4, X(.2) - X(.1), E * 3.2); [X(.112), X(.188)].forEach(x => ctx.fillRect(x - E * .2, ty0 - E * 3.4, E * .4, E * 2.2)); ctx.fillStyle = rgba("#e3c27a", .5); for (let i = 0; i < 6; i++) ctx.fillRect(X(.114) + i * E * 2.3, ty0 - E * 5.3, E * 1.5, E * 1);
+    for (let i = 0; i < 9; i++) { const w = E * rc.r(4.4, 7), h = E * rc.r(5, 8.4), x = t0 + E * 1.2 + (i % 5) * (t1 - t0 - E * 2) / 5 + rc.r(-.6, .6) * E, y = i < 5 ? ty0 + E * rc.r(.8, 2.4) : ty0 + E * rc.r(10.5, 12.6); ctx.save(); ctx.translate(x + (i >= 5 ? E * 3 : 0), y); ctx.rotate(rc.r(-.09, .09));
+      ctx.fillStyle = mixc("#dccba2", "#a89468", rc() * .5); ctx.fillRect(0, 0, w, h); ctx.fillStyle = rgba("#2a2014", .45); for (let l = 0; l < 5; l++) ctx.fillRect(w * .14, h * (.2 + l * .13), w * rc.r(.4, .72), Math.max(1, E * .22)); if (rc() < .55) { ctx.fillStyle = P.sang; ctx.beginPath(); ctx.arc(w * .72, h * .86, E * .7, 0, TAU); ctx.fill(); }
+      ctx.fillStyle = "#1a1612"; ctx.beginPath(); ctx.arc(w * .5, E * .5, E * .32, 0, TAU); ctx.fill(); ctx.restore(); }
+    // traverses du râtelier d'armes (à droite)
+    const r0 = X(.765), r1 = X(.935), ry0 = Y(.3), ry1 = Y(.53); ctx.fillStyle = ton(c.bois, -.25); [ry0, ry1].forEach(y => ctx.fillRect(r0, y, r1 - r0, E * 1.4)); [r0, r1 - E * 1.2].forEach(x => ctx.fillRect(x, ry0 - E * 2, E * 1.2, ry1 - ry0 + E * 5));
+    // lumière : grande baie, torches murales, braseros, lustre
+    const w0 = X(.435), w1 = X(.565), wy0 = Y(.1), wy1 = Y(.5), ww = w1 - w0;
+    const baie = (g = 0) => { ctx.beginPath(); ctx.moveTo(w0 - g, wy1 + g); ctx.lineTo(w0 - g, wy0 + ww * .5); ctx.quadraticCurveTo(w0 - g, wy0 - g, mx, wy0 - g * 1.2 - ww * .16); ctx.quadraticCurveTo(w1 + g, wy0 - g, w1 + g, wy0 + ww * .5); ctx.lineTo(w1 + g, wy1 + g); ctx.closePath(); };
+    const nappe = (x, a) => { x.save(); x.globalCompositeOperation = "lighter"; x.fillStyle = G.lin(x, 0, wy1, 0, B.Y(1), [[0, rgba(c.jour, a)], [1, rgba(c.jour, a * .3)]]); poly(x, [[w0, wy1], [w1, wy1], [mx + E * 34, B.Y(1)], [mx - E * 34, B.Y(1)]]); x.fill(); x.restore(); };
+    lumieres(ctx, B, c.amb, [[mx, Y(.3), E * 86, c.jour, n ? .55 : .8], x => nappe(x, n ? .22 : .34), [X(.265), Y(.42), E * 52, c.feu, .85], [X(.735), Y(.42), E * 52, c.feu, .85], [X(.385), Y(.64), E * 44, c.feu, .7], [X(.615), Y(.64), E * 44, c.feu, .7], [mx, T(.1), E * 60, c.feu, .4], [mx, Y(.6), E * 130, "#77747c", .36]]);
+    ctx.fillStyle = ton(c.mur, -.6); baie(E * 1.8); ctx.fill(); ctx.save(); baie(); ctx.clip(); carreaux(ctx, w0, wy0 - ww * .2, w1, wy1, { nx: 6, ny: 13, bois: c.noir, cadre: E * 1.1, teintes: c.vit, bas: c.vitB, fondu: .5, seed: "guilde", montants: [.333, .667], traverses: [.3],
+      apres: () => { if (n) G.astre(ctx, lerp(w0, w1, .68), lerp(wy0, wy1, .2), E * 2.2, "#eef3ff", "#8fb1ff", true); else G.glow(ctx, mx, lerp(wy0, wy1, .3), E * 20, "#ffffff", .5); } }); ctx.restore();
+    ctx.fillStyle = ton(c.mur, -.5); ctx.fillRect(w0 - E * 3, wy1 + E * 1.2, ww + E * 6, E * 1.6); G.glow(ctx, mx, Y(.3), E * 46, c.jour, n ? .2 : .3);
+    nappe(ctx, n ? .07 : .1); G.shafts(ctx, mx, wy0, yF + E * 14 - wy0, ww * 1.5, c.jour, n ? .07 : .09, 8, 5, 0);
+    ctx.save(); ctx.globalCompositeOperation = "lighter"; for (let i = 0; i < 3; i++) { const a = (i - 1.5) * E * 7.4, b = a + E * 6.4, y0 = yF + E * 3, y1 = yF + E * 13; poly(ctx, [[mx + a * kq(y0), y0], [mx + b * kq(y0), y0], [mx + b * kq(y1) * 1.12, y1], [mx + a * kq(y1) * 1.12, y1]], rgba(c.jour, n ? .1 : .13)); } ctx.restore();
+    // hautes bannières de la Guilde
+    const etendard = (x, y0, w, h) => { ctx.fillStyle = c.noir; ctx.fillRect(x - w / 2 - E * 1.6, y0 - E * .9, w + E * 3.2, E * .9); const cloth = g => poly(ctx, [[x - w / 2 + g, y0 + g], [x + w / 2 - g, y0 + g], [x + w / 2 - g, y0 + h - g * 2], [x, y0 + h - w * .46 - g], [x - w / 2 + g, y0 + h - g * 2]]);
+      ctx.fillStyle = G.lin(ctx, 0, y0, 0, y0 + h, [[0, ton(c.ban, -.3)], [.3, c.ban], [.75, ton(c.ban, -.12)], [1, ton(c.ban, -.4)]]); cloth(0); ctx.fill(); ctx.save(); ctx.clip(); [[-.3, "#000000", .14], [-.05, "#ffffff", .07], [.22, "#000000", .1]].forEach(([k, col, a]) => { ctx.fillStyle = rgba(col, a); ctx.fillRect(x + w * k, y0, w * .16, h); }); ctx.restore();
+      ctx.strokeStyle = rgba(c.ban2, .7); ctx.lineWidth = Math.max(1, E * .3); cloth(E * .9); ctx.stroke(); const ey = y0 + h * .34, er = w * .27; ctx.beginPath(); ctx.arc(x, ey, er, 0, TAU); ctx.stroke();
+      ctx.fillStyle = rgba(c.ban2, .85); ctx.fillRect(x - er * .32, ey - er * .3, er * .64, er * .9); [-.42, -.1, .22].forEach(k => ctx.fillRect(x + er * k, ey - er * .56, er * .2, er * .3)); ctx.fillRect(x - er * .46, ey - er * .34, er * .92, er * .14); };
+    etendard(X(.33), Y(.07), E * 11, E * 45); etendard(X(.67), Y(.07), E * 11, E * 45);
+    torche(ctx, feux, X(.265), Y(.43), E * 3.4, c.noir, 1.2); torche(ctx, feux, X(.735), Y(.43), E * 3.4, c.noir, 4.4);
+    // armes au râtelier : épées, haches, boucliers
+    const rim = rgba("#ffa860", .5); liseré(ctx, -E * .24, 0, rim, c.noir, col => { [.79, .812, .834].forEach((u, i) => epee(ctx, X(u), ry0 - E * 1.6, E * (1 + i * .06), col, 13 + i)); [.862, .888].forEach((u, i) => { ctx.fillStyle = col; ctx.fillRect(X(u) - E * .3, ry0 - E * 2, E * .6, E * 18); ctx.beginPath(); ctx.moveTo(X(u), ry0 - E * 1.4); ctx.quadraticCurveTo(X(u) + E * 3.6, ry0 - E * 2.6, X(u) + E * 3.2, ry0 + E * 3.4); ctx.quadraticCurveTo(X(u) + E * 1.6, ry0 + E * 1.8, X(u), ry0 + E * 2.2); ctx.closePath(); ctx.fill(); }); });
+    [[.915, .36], [.75, .2]].forEach(([u, v]) => { const x = X(u), y = Y(v), r = E * 4; ctx.fillStyle = c.noir; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); ctx.fillStyle = ton(c.ban, -.25); ctx.beginPath(); ctx.arc(x, y, r * .82, 0, TAU); ctx.fill(); ctx.fillStyle = rgba(c.ban2, .6); ctx.fillRect(x - r * .1, y - r * .8, r * .2, r * 1.6); ctx.fillRect(x - r * .8, y - r * .1, r * 1.6, r * .2); ctx.fillStyle = c.noir; ctx.beginPath(); ctx.arc(x, y, r * .24, 0, TAU); ctx.fill(); });
+    // lustre de fer forgé, solives
+    chaine(ctx, mx, 0, mx, T(.085), E * .9, c.noir); ctx.strokeStyle = c.noir; ctx.lineWidth = E * 1; ctx.beginPath(); ctx.ellipse(mx, T(.11), E * 12, E * 2.3, 0, 0, TAU); ctx.stroke(); [-1, 1].forEach(sg => seg(ctx, mx, T(.085), mx + sg * E * 11.6, T(.108), E * .4, c.noir));
+    [[-11.6, 0], [-7, 1.9], [0, 2.4], [7, 1.9], [11.6, 0], [-5, -1.9], [5, -1.9]].forEach(([dx, dy], i) => { const x = mx + dx * E, y = T(.11) + dy * E - E * .4; ctx.fillStyle = "#d8cba8"; ctx.fillRect(x - E * .3, y - E * 1.8, E * .6, E * 1.8); lustre.push([x, y - E * 1.9, E * 1.5, i * 1.3]); G.glow(ctx, x, y - E * 2.4, E * 6, c.feu, .28); });
+    ctx.fillStyle = c.pre; ctx.fillRect(B.x0, -2, B.x1 - B.x0, T(.035) + 2); vignette(ctx, B, n ? .58 : .46);
+    ctx.fillStyle = G.lin(ctx, 0, B.Y(1), 0, B.Y(1.25), [[0, rgba(c.pre, 0)], [1, rgba(c.pre, 1)]]); ctx.fillRect(B.x0, B.Y(1), B.x1 - B.x0, B.H);
+    B.dyn(.4, (x, t) => { for (const f of feux) G.flamme(x, f[0], f[1], f[2], t, f[3]); for (const f of lustre) G.flamme(x, f[0], f[1], f[2], t, f[3]); });
+    // la grande table aux cartes, entre deux braseros
+    ctx = B.couche(.55); const yP = yF + E * 5, yT = yP - E * 10.5, bois = "#2a1e14", bra = [], tf = [];
+    ctx.fillStyle = G.rad(ctx, 0, 0, 0, 1, [[0, "rgba(0,0,0,.45)"], [1, "rgba(0,0,0,0)"]]); ctx.save(); ctx.translate(mx, yP); ctx.scale(E * 19, E * 1.8); ctx.fillRect(-1, -1, 2, 2); ctx.restore();
+    ctx.fillStyle = bois; ctx.fillRect(mx - E * 14, yT, E * 28, E * 1.7); ctx.fillRect(mx - E * 12.4, yT + E * 1.7, E * 24.8, E * 1.5); ctx.fillRect(mx - E * 11, yT + E * 6.6, E * 22, E * .9);
+    [-1, 1].forEach(sg => { poly(ctx, [[mx + sg * E * 9.4, yT + E * 3], [mx + sg * E * 11.4, yT + E * 3], [mx + sg * E * 13, yP], [mx + sg * E * 11.4, yP]], bois); poly(ctx, [[mx + sg * E * 11.4, yT + E * 3], [mx + sg * E * 9.4, yT + E * 3], [mx + sg * E * 7.6, yP], [mx + sg * E * 9.2, yP]], bois); });
+    brasero(ctx, bra, X(.385), yP, E * 11, "#14110f", 2); brasero(ctx, bra, X(.615), yP, E * 11, "#14110f", 5.5);
+    eclaire(ctx, X(.385), yP - E * 10, E * 22, "#ff9a50", .8); eclaire(ctx, X(.615), yP - E * 10, E * 22, "#ff9a50", .8); eclaire(ctx, mx, yT - E * 8, E * 18, c.jour, n ? .25 : .4);
+    // cartes déroulées, rouleaux, encrier et plume, bougie
+    const pap = n ? "#a8a08c" : "#d8caa2"; ctx.fillStyle = pap; ctx.fillRect(mx - E * 9, yT - E * .5, E * 13, E * .6); poly(ctx, [[mx - E * 5, yT], [mx + E * 3.4, yT], [mx + E * 3.8, yT + E * 5.4], [mx - E * 4.6, yT + E * 5]], pap);
+    ctx.strokeStyle = rgba("#3a2a1a", .55); ctx.lineWidth = Math.max(1, E * .2); ctx.beginPath(); ctx.moveTo(mx - E * 4, yT + E * 1.2); ctx.bezierCurveTo(mx - E * 2, yT + E * 3.4, mx, yT + E * .8, mx + E * 3, yT + E * 3); ctx.moveTo(mx - E * 3.4, yT + E * 3.8); ctx.lineTo(mx - E * 1.4, yT + E * 4.2); ctx.stroke(); [[-2.6, 2.2], [1.4, 3.8], [2.2, 1.4]].forEach(([dx, dy]) => { ctx.beginPath(); ctx.moveTo(mx + dx * E - E * .4, yT + dy * E - E * .4); ctx.lineTo(mx + dx * E + E * .4, yT + dy * E + E * .4); ctx.moveTo(mx + dx * E + E * .4, yT + dy * E - E * .4); ctx.lineTo(mx + dx * E - E * .4, yT + dy * E + E * .4); ctx.stroke(); });
+    ctx.fillStyle = pap; rrect(ctx, mx + E * 5.6, yT - E * 1.3, E * 6, E * 1.3, E * .6); ctx.fill(); rrect(ctx, mx + E * 6.6, yT - E * 2.3, E * 5, E * 1.2, E * .6); ctx.fill();
+    ctx.fillStyle = "#0e0c0a"; ctx.fillRect(mx - E * 12.4, yT - E * 1.4, E * 1.6, E * 1.4); seg(ctx, mx - E * 11.6, yT - E * 1.2, mx - E * 9.6, yT - E * 5.6, E * .3, "#cfc6b0"); bougie(ctx, tf, mx - E * 7.4, yT - E * .5, E * 3, "#d8cba8");
+    B.dyn(.55, (x, t) => { for (const f of bra) G.flamme(x, f[0], f[1], f[2] * .62, t, f[3]); for (const f of tf) G.flamme(x, f[0], f[1], f[2], t, f[3]); });
+    B.part(.55, "braise", { x: X(.385) - E * 3, y: yP - E * 26, w: E * 6, h: E * 15 }, { n: 7, scale: Uu / 9, seed: "g1" }); B.part(.55, "braise", { x: X(.615) - E * 3, y: yP - E * 26, w: E * 6, h: E * 15 }, { n: 7, scale: Uu / 9, seed: "g2" });
+    B.sol = B.Y(.9);
+    B.acteurs();
+    // premier plan : deux piliers et la retombée de la voûte
+    ctx = B.couche(1); const g0 = B.X(0), g1 = B.X(1), yb = Math.min(B.H, B.Y(1.03)), pw = Uu * (R.k < 1 ? 6 : 9.5);
+    ctx.fillStyle = c.pre; ctx.beginPath(); ctx.moveTo(B.x0, 0); ctx.lineTo(B.x0, B.Y(.2)); ctx.lineTo(g0 + pw, B.Y(.2)); ctx.quadraticCurveTo(mx, B.Y(-.2), g1 - pw, B.Y(.2)); ctx.lineTo(B.x1, B.Y(.2)); ctx.lineTo(B.x1, 0); ctx.closePath(); ctx.fill();
+    [[g0, 1], [g1, -1]].forEach(([gx, sg]) => { const xi = gx + sg * pw; ctx.fillStyle = G.lin(ctx, xi - sg * Uu * 11, 0, xi, 0, [[0, c.pre], [1, n ? "#15151d" : "#211f21"]]); ctx.fillRect(Math.min(gx - sg * Uu * 40, xi), 0, Math.abs(xi - (gx - sg * Uu * 40)), B.H); ctx.fillStyle = n ? "#101016" : "#18171a"; poly(ctx, [[xi, B.Y(.13)], [xi + sg * Uu * 3, B.Y(.15)], [xi + sg * Uu * 3, B.Y(.19)], [xi, B.Y(.23)]], n ? "#101016" : "#18171a"); poly(ctx, [[xi, yb - Uu * 12], [xi + sg * Uu * 2.6, yb - Uu * 9], [xi + sg * Uu * 2.6, B.H], [xi, B.H]], n ? "#101016" : "#18171a");
+      ctx.fillStyle = rgba(c.feu, n ? .2 : .16); ctx.fillRect(xi - (sg > 0 ? Uu * .4 : 0), B.Y(.23), Uu * .4, yb - Uu * 12 - B.Y(.23)); });
+    ctx.fillStyle = c.pre; ctx.fillRect(B.x0, yb - Uu, B.x1 - B.x0, B.H - yb + Uu);
+    B.part(1, "poussiere", { x: B.X(.2), y: B.Y(.1), w: B.s.w * .6, h: B.Y(.9) - B.Y(.1) }, { n: 30, col: n ? "#c9d8ff" : "#fff1c4", scale: Uu / 7.5 });
+  };
+
+  // ====================================================================================================
+  // L'auberge du Gué (et la boutique d'Odile) : âtre vivant, poutres, tonneaux, comptoir, escalier vers les chambres.
+  D.auberge = B => { const n = B.nuit, Uu = B.U, R = repere(B, .8, .72), E = R.E, X = R.X, Y = R.Y, T = R.T, yF = B.Y(.8);
+    const c = n ? { mur: "#ac9068", bois: "#6c4c30", sol: "#8a6a48", pierre: "#948978", amb: "#20150f", noir: "#0c0705", pre: "#040302", feu: "#ffaa58", ext: "#6f8fc8", vit: ["#2c4478", "#35508c", "#28406c"], vitB: "#1c2e54" }
+                : { mur: "#b89a6e", bois: "#735234", sol: "#92714c", pierre: "#9c907e", amb: "#30221a", noir: "#120b07", pre: "#070403", feu: "#ffb464", ext: "#ffd9a0", vit: ["#f4d8a0", "#eccb8e", "#f8e2b4"], vitB: "#e0a868" };
+    B.lum = { col: "#ffb868", dir: -1, amb: n ? "#1a110c" : "#33241a", brume: n ? "#6e4a34" : "#a67c56" };
+    let ctx = B.couche(.4); const feux = [], lant = [];
+    // torchis et colombages, lambris, plancher
+    ctx.fillStyle = c.mur; ctx.fillRect(B.x0, 0, B.x1 - B.x0, yF + 2); const rm = rng("torchis"); for (let i = 0; i < 60; i++) { G.blob(ctx, lerp(B.x0, B.x1, rm()), rm() * yF, E * rm.r(4, 13), E * rm.r(3, 8), i + 1, .3, 12); ctx.fillStyle = rgba(rm() < .5 ? "#2a1a0c" : "#ffffff", rm.r(.02, .05)); ctx.fill(); }
+    const colB = ton(c.bois, -.3); ctx.fillStyle = colB; [.235, .52, .645].forEach(u => ctx.fillRect(X(u) - E * 1.3, 0, E * 2.6, yF)); ctx.fillRect(B.x0, Y(.22), B.x1 - B.x0, E * 2.2); seg(ctx, X(.52), Y(.22), X(.57), Y(.06), E * 2, colB); seg(ctx, X(.645), Y(.22), X(.595), Y(.06), E * 2, colB);
+    planches(ctx, B.x0, Y(.66), B.x1, yF + 2, tonA(c.bois, .1), { l: E * 4.4, seed: 13, j: .22 }); ctx.fillStyle = colB; ctx.fillRect(B.x0, Y(.66) - E * 1.1, B.x1 - B.x0, E * 1.3);
+    dallage(ctx, B, yF, c.sol, { seed: 14, pas: 9, lames: true, j: .26 });
+    // l'escalier vers les chambres (à gauche), tonneaux dessous
+    const ex = X(.215), pas = E * 3.5, nm = 13; ctx.fillStyle = ton(c.bois, -.12); ctx.beginPath(); ctx.moveTo(ex, yF + 2); for (let i = 0; i < nm; i++) { ctx.lineTo(ex - i * pas, yF - (i + 1) * pas); ctx.lineTo(ex - (i + 1) * pas, yF - (i + 1) * pas); } ctx.lineTo(B.x0 - 4, yF - nm * pas); ctx.lineTo(B.x0 - 4, yF + 2); ctx.closePath(); ctx.fill();
+    ctx.save(); ctx.clip(); ctx.fillStyle = rgba("#000000", .2); for (let x = ex; x > B.x0; x -= E * 4.2) ctx.fillRect(x, 0, Math.max(1, E * .3), yF); ctx.restore();
+    ctx.strokeStyle = colB; ctx.lineWidth = E * .7; ctx.lineCap = "butt"; for (let i = 0; i < nm; i++) { const bx = ex - (i + .5) * pas; ctx.beginPath(); ctx.moveTo(bx, yF - (i + 1) * pas); ctx.lineTo(bx, yF - (i + 1) * pas - E * 9.4); ctx.stroke(); }
+    seg(ctx, ex + E * .4, yF - E * 10.6, ex - nm * pas, yF - nm * pas - E * 10.4, E * 1.3, colB); ctx.fillStyle = colB; ctx.fillRect(ex - E * 1, yF - E * 12.6, E * 2, E * 12.8); ctx.beginPath(); ctx.arc(ex, yF - E * 13.4, E * 1.4, 0, TAU); ctx.fill();
+    tonneau(ctx, X(.075), yF + E, E * 11, E * 12, ton(c.bois, -.2), ton(c.bois, -.6)); tonneau(ctx, X(.135), yF + E, E * 8.4, E * 9, ton(c.bois, -.12), ton(c.bois, -.6));
+    // l'âtre : jambages de pierre, linteau, hotte
+    const h0 = X(.3), h1 = X(.495), hx = (h0 + h1) / 2, yMan = Y(.555), aw = E * 12.6, ah = E * 19.5;
+    pierres(ctx, h0, 0, h1, yF + 2, { col: c.pierre, h: E * 3.8, seed: 51 }); ctx.fillStyle = rgba("#000000", .22); ctx.fillRect(h1, 0, E * 1.6, yF); ctx.fillRect(h0 - E * .5, 0, E * .5, yF);
+    const arc = (w, h) => { ctx.beginPath(); ctx.moveTo(hx - w, yF + 2); ctx.lineTo(hx - w, yF - h + w * .5); ctx.quadraticCurveTo(hx - w, yF - h, hx, yF - h); ctx.quadraticCurveTo(hx + w, yF - h, hx + w, yF - h + w * .5); ctx.lineTo(hx + w, yF + 2); ctx.closePath(); };
+    ctx.fillStyle = ton(c.pierre, -.25); arc(aw + E * 1.7, ah + E * 1.7); ctx.fill(); ctx.fillStyle = "#3a2a1c"; arc(aw, ah); ctx.fill();
+    ctx.fillStyle = ton(c.bois, -.4); ctx.fillRect(h0 - E * 2.6, yMan, h1 - h0 + E * 5.2, E * 2.6); ctx.fillStyle = ton(c.bois, -.15); ctx.fillRect(h0 - E * 2.6, yMan, h1 - h0 + E * 5.2, E * .5);
+    // sur le linteau : assiettes d'étain et chopes ; au-dessus, un bouclier rond
+    [[-11, 2.4], [-5.6, 2.9], [6.4, 2.6]].forEach(([dx, r]) => { ctx.fillStyle = "#b9b2a0"; ctx.beginPath(); ctx.arc(hx + dx * E, yMan - r * E, r * E, 0, TAU); ctx.fill(); ctx.strokeStyle = rgba("#000000", .2); ctx.lineWidth = E * .3; ctx.beginPath(); ctx.arc(hx + dx * E, yMan - r * E, r * E * .62, 0, TAU); ctx.stroke(); }); chope(ctx, hx + E * 11.4, yMan, E * 1.3, "#8f887a"); chope(ctx, hx - E * .6, yMan, E * 1.15, "#8f887a");
+    ctx.fillStyle = ton(c.bois, -.3); ctx.beginPath(); ctx.arc(hx, Y(.33), E * 6.4, 0, TAU); ctx.fill(); ctx.fillStyle = "#8a4a32"; ctx.beginPath(); ctx.arc(hx, Y(.33), E * 5.4, 0, TAU); ctx.fill(); ctx.fillStyle = "#c9b98a"; ctx.beginPath(); ctx.arc(hx, Y(.33), E * 1.5, 0, TAU); ctx.fill(); ctx.fillStyle = rgba("#000000", .22); ctx.fillRect(hx - E * 5.4, Y(.33) - E * .4, E * 10.8, E * .8);
+    // panier de bûches
+    const px = X(.535); ctx.fillStyle = ton(c.bois, -.2); poly(ctx, [[px - E * 4, yF - E * 4.4], [px + E * 4, yF - E * 4.4], [px + E * 3.2, yF + E], [px - E * 3.2, yF + E]]); ctx.fill(); [[-2.2, -5.6], [.4, -5.8], [2.4, -5.4], [-.8, -7.4], [1.4, -7.2]].forEach(([dx, dy]) => { ctx.fillStyle = "#6a4a2e"; ctx.beginPath(); ctx.arc(px + dx * E, yF + dy * E, E * 1.3, 0, TAU); ctx.fill(); ctx.fillStyle = "#b08a58"; ctx.beginPath(); ctx.arc(px + dx * E, yF + dy * E, E * .8, 0, TAU); ctx.fill(); });
+    // le comptoir d'Odile (à droite) : étagères, cruches, tonnelet, chopes ; marchandises pendues
+    const c0 = X(.675), yC = Y(.665), e0 = X(.69), e1 = B.x1, rg = rng("auberge-et");
+    [.4, .525].forEach(v => { const y = Y(v); ctx.fillStyle = colB; ctx.fillRect(e0, y, e1 - e0, E * 1.2); ctx.fillStyle = rgba("#000000", .16); ctx.fillRect(e0, y + E * 1.2, e1 - e0, E * 1.5);
+      for (let x = e0 + E * 2.4; x < X(1.02); ) { const k = rg(), s = E * rg.r(1.1, 1.6); if (k < .34) { fiole(ctx, x + s, y, s, 1, rg.pick(["#3a5a3a", "#6a4a22", "#2a3a4a", "#7a3a2a"]), .95); x += s * 2.6; } else if (k < .6) { ctx.fillStyle = rg.pick(["#8a6a4a", "#9a8468", "#6a5a48"]); ctx.beginPath(); ctx.ellipse(x + s * 1.3, y - s * 1.5, s * 1.3, s * 1.5, 0, 0, TAU); ctx.fill(); ctx.fillRect(x + s * .8, y - s * 3.6, s * 1, s * 1); ctx.strokeStyle = ctx.fillStyle; ctx.lineWidth = s * .3; ctx.beginPath(); ctx.arc(x + s * 2.5, y - s * 2, s * .8, -1.2, 1.4); ctx.stroke(); x += s * 4.2; }
+        else if (k < .8) { ctx.fillStyle = "#c9a85a"; rrect(ctx, x, y - s * 1.5, s * 3.6, s * 1.5, s * .5); ctx.fill(); x += s * 4.6; } else { chope(ctx, x + s, y, s * .9, "#8f887a"); x += s * 3.2; } } });
+    ctx.fillStyle = ton(c.bois, -.05); ctx.fillRect(c0, yC, B.x1 - c0, E * 1.9); planches(ctx, c0 + E * 1.6, yC + E * 1.9, B.x1, yF + 2, tonA(c.bois, -.14), { l: E * 4.6, seed: 17, j: .26 }); ctx.fillStyle = ton(c.bois, -.45); ctx.fillRect(c0 + E * 1.6, yC + E * 1.9, B.x1 - c0, E * .9); ctx.fillRect(c0 + E * 1.6, yF - E * 1.6, B.x1 - c0, E * 1.8);
+    [[.71, 1.3], [.735, 1.1], [.9, 1.25]].forEach(([u, k]) => chope(ctx, X(u), yC, E * k, "#8f887a")); const kx = X(.815); ctx.fillStyle = ton(c.bois, -.4); poly(ctx, [[kx - E * 4, yC], [kx - E * 2.6, yC - E * 2], [kx + E * 2.6, yC - E * 2], [kx + E * 4, yC]]); ctx.fill(); ctx.fillStyle = ton(c.bois, -.1); ctx.beginPath(); ctx.arc(kx, yC - E * 5, E * 4, 0, TAU); ctx.fill(); ctx.strokeStyle = ton(c.bois, -.6); ctx.lineWidth = E * .6; ctx.beginPath(); ctx.arc(kx, yC - E * 5, E * 3.7, 0, TAU); ctx.stroke(); ctx.beginPath(); ctx.arc(kx, yC - E * 5, E * 2.2, 0, TAU); ctx.stroke(); ctx.fillStyle = "#2a2018"; ctx.fillRect(kx - E * .4, yC - E * 3, E * .8, E * 2);
+    // la lumière : le feu, les lanternes du comptoir, la fenêtre
+    const f0 = X(.552), f1 = X(.615), fy0 = Y(.3), fy1 = Y(.51), yR = Y(.135), lx = [X(.745), X(.905)];
+    lumieres(ctx, B, c.amb, [[hx, yF - E * 6, E * 125, "#ff8e40", .95], [hx, yF - E * 5, E * 52, "#ffc880", .7], [lx[0], yR + E * 9, E * 46, c.feu, .75], [lx[1], yR + E * 9, E * 46, c.feu, .75], [X(.955), yC - E * 4, E * 26, c.feu, .5], [(f0 + f1) / 2, Y(.42), E * 30, c.ext, n ? .3 : .45], [X(.5), Y(.62), E * 120, "#8a5a34", .42]]);
+    // fenêtre et ses volets
+    carreaux(ctx, f0, fy0, f1, fy1, { nx: 4, ny: 6, bois: c.noir, cadre: E * 1.2, teintes: c.vit, bas: c.vitB, fondu: .6, seed: "auberge", montants: [.5], apres: () => { if (n) G.astre(ctx, lerp(f0, f1, .66), lerp(fy0, fy1, .28), E * 1.6, "#eef3ff", "#8fb1ff", true); } }); G.glow(ctx, (f0 + f1) / 2, (fy0 + fy1) / 2, E * 18, c.ext, n ? .16 : .22);
+    ctx.fillStyle = c.noir; ctx.fillRect(f0 - E * 2.4, fy1 + E * 1, f1 - f0 + E * 4.8, E * 1.2);
+    // l'âtre : suie, bûches, chenets
+    ctx.save(); arc(aw, ah); ctx.clip(); ctx.fillStyle = G.lin(ctx, 0, yF - ah, 0, yF, [[0, "#0c0705"], [.55, "#3a1608"], [1, "#b04c1a"]]); ctx.fillRect(hx - aw, yF - ah, aw * 2, ah + 2); G.glow(ctx, hx, yF - E * 2, E * 16, "#ffb050", .85);
+    ctx.fillStyle = "#1a0d08"; [[-1.5, .14, 15], [1.5, -.12, 14], [0, .03, 11]].forEach(([dx, a, l], i) => { ctx.save(); ctx.translate(hx + dx * E, yF - E * (1.2 + (i === 2 ? 2.2 : 0))); ctx.rotate(a); ctx.fillRect(-E * l / 2, -E * 1, E * l, E * 2); ctx.restore(); });
+    ctx.fillStyle = "#0b0907"; [-1, 1].forEach(sg => { ctx.fillRect(hx + sg * E * 8.6 - E * .4, yF - E * 7, E * .8, E * 7.2); ctx.beginPath(); ctx.arc(hx + sg * E * 8.6, yF - E * 7.4, E * 1, 0, TAU); ctx.fill(); }); ctx.restore();
+    // marchandises pendues à la tringle : cordes, lanternes, carquois, jambon, poêle
+    ctx.fillStyle = c.noir; ctx.fillRect(c0 - E * 1, yR, B.x1 - c0 + E, E * .9); const fil = (x, l) => seg(ctx, x, yR + E * .8, x, yR + l, Math.max(1, E * .22), c.noir);
+    [[.7, 5.2], [.86, 4.6]].forEach(([u, r]) => { const x = X(u), y = yR + E * (3 + r); fil(x, E * 3); ctx.strokeStyle = n ? "#8a7850" : "#a89060"; ctx.lineWidth = E * .7; [1, .78, .56].forEach(q => { ctx.beginPath(); ctx.ellipse(x, y, E * r * q * .8, E * r * q, 0, 0, TAU); ctx.stroke(); }); ctx.fillStyle = c.noir; ctx.fillRect(x - E * 1.1, y - E * r - E * .5, E * 2.2, E * 1.1); });
+    lx.forEach((x, i) => { const y = yR + E * 4; fil(x, E * 4); ctx.strokeStyle = c.noir; ctx.lineWidth = E * .35; ctx.beginPath(); ctx.arc(x, y + E * .6, E * 1.2, Math.PI, TAU); ctx.stroke(); ctx.fillStyle = c.noir; poly(ctx, [[x - E * 2, y + E * 1.6], [x, y + E * .2], [x + E * 2, y + E * 1.6]]); ctx.fill(); ctx.fillRect(x - E * 1.9, y + E * 6.6, E * 3.8, E * .9);
+      ctx.fillStyle = "#ffd890"; ctx.fillRect(x - E * 1.5, y + E * 1.6, E * 3, E * 5); ctx.fillStyle = c.noir; [-1.6, -.2, 1.2].forEach(d => ctx.fillRect(x + d * E, y + E * 1.6, E * .4, E * 5)); lant.push([x, y + E * 4.2, i * 2.2]); G.glow(ctx, x, y + E * 4.2, E * 13, c.feu, .5); });
+    { const x = X(.79), y = yR + E * 2.4; fil(x, E * 2.6); ctx.save(); ctx.translate(x, y); ctx.rotate(.2); ctx.fillStyle = "#3a281a"; rrect(ctx, -E * 1.5, 0, E * 3, E * 9.4, E * 1.2); ctx.fill(); ctx.fillStyle = c.noir; ctx.fillRect(-E * 1.6, E * 1.2, E * 3.2, E * .6); [-.9, -.2, .5, 1].forEach((d, i) => { seg(ctx, d * E, 0, d * E * 1.3, -E * (2.6 + (i % 2)), Math.max(1, E * .2), "#2a2018"); poly(ctx, [[d * E * 1.3 - E * .5, -E * (2 + (i % 2))], [d * E * 1.3, -E * (3.6 + (i % 2))], [d * E * 1.3 + E * .5, -E * (2 + (i % 2))]], n ? "#8a8a98" : "#c9c0a8"); }); ctx.restore(); }
+    { const x = X(.955), y = yR + E * 3; fil(x, E * 3); ctx.fillStyle = "#5a2a1e"; ctx.beginPath(); ctx.moveTo(x - E * .5, y); ctx.quadraticCurveTo(x - E * 3.4, y + E * 5, x - E * 1.6, y + E * 8.4); ctx.quadraticCurveTo(x, y + E * 9.6, x + E * 1.6, y + E * 8.4); ctx.quadraticCurveTo(x + E * 3.4, y + E * 5, x + E * .5, y); ctx.closePath(); ctx.fill(); }
+    { const x = X(.99), y = yR + E * 2; fil(x, E * 2); ctx.fillStyle = c.noir; ctx.fillRect(x - E * .4, y, E * .8, E * 5); ctx.beginPath(); ctx.arc(x, y + E * 7.6, E * 3, 0, TAU); ctx.fill(); }
+    tresseAil(ctx, X(.665), yR + E * .6, E * 9, E * 1, n ? "#8a6a4a" : "#b88a52", c.noir);
+    bougie(ctx, feux, X(.955), yC, E * 3.2, "#d8cba8");
+    // solives et saucissons pendus
+    ctx.fillStyle = c.pre; ctx.fillRect(B.x0, -2, B.x1 - B.x0, T(.05) + 2); for (let x = B.X(.5) - E * 104; x < B.x1; x += E * 19) ctx.fillRect(x, 0, E * 3, T(.1));
+    [[-28, 7], [-25.4, 5.6], [-22.6, 6.6], [16, 6], [18.6, 7.4]].forEach(([dx, l]) => { const x = B.X(.5) + dx * E; seg(ctx, x, T(.05), x, T(.075), Math.max(1, E * .2), c.pre); ctx.fillStyle = "#3a1c14"; rrect(ctx, x - E * .9, T(.075), E * 1.8, E * l, E * .9); ctx.fill(); });
+    vignette(ctx, B, n ? .58 : .48);
+    ctx.fillStyle = G.lin(ctx, 0, B.Y(1), 0, B.Y(1.25), [[0, rgba(c.pre, 0)], [1, rgba(c.pre, 1)]]); ctx.fillRect(B.x0, B.Y(1), B.x1 - B.x0, B.H);
+    const hl = G.glowTile(c.feu);
+    B.dyn(.4, (x, t) => { const f = .8 + .2 * Math.sin(t * 6.9) * Math.sin(t * 2.3 + 1); G.glow(x, hx, yF - E * 5, E * 62, "#ff8a3c", (n ? .15 : .12) * f);
+      G.flamme(x, hx - E * 4, yF - E * 2.2, E * 7, t, 1.1); G.flamme(x, hx + E * .6, yF - E * 3.8, E * 9.4, t, 3.3); G.flamme(x, hx + E * 4.6, yF - E * 2.2, E * 6.2, t, 5.2); for (const q of feux) G.flamme(x, q[0], q[1], q[2], t, q[3]);
+      x.save(); x.globalCompositeOperation = "lighter"; lant.forEach(([px, py, ph]) => { const d = E * (7 + Math.sin(t * 5.3 + ph) * .7); x.globalAlpha = .34 + .08 * Math.sin(t * 7 + ph); x.drawImage(hl, px - d, py - d, d * 2, d * 2); }); x.globalAlpha = 1; x.restore(); });
+    B.part(.4, "braise", { x: hx - E * 8, y: yF - E * 30, w: E * 16, h: E * 27 }, { n: 12, scale: Uu / 8.5, seed: "au1" });
+    // une petite table et son tabouret, devant la fenêtre
+    ctx = B.couche(.55); const tx = X(.59), yP = yF + E * 5.5, bois = "#2a1a10", tf = [];
+    ctx.fillStyle = G.rad(ctx, 0, 0, 0, 1, [[0, "rgba(0,0,0,.45)"], [1, "rgba(0,0,0,0)"]]); ctx.save(); ctx.translate(tx, yP); ctx.scale(E * 11, E * 1.5); ctx.fillRect(-1, -1, 2, 2); ctx.restore();
+    ctx.fillStyle = bois; ctx.fillRect(tx - E * 7, yP - E * 9.4, E * 14, E * 1.4); ctx.fillRect(tx - E * .9, yP - E * 8, E * 1.8, E * 7.4); poly(ctx, [[tx - E * 4.6, yP], [tx - E * .9, yP - E * 2.4], [tx + E * .9, yP - E * 2.4], [tx + E * 4.6, yP]], bois);
+    chope(ctx, tx - E * 3.4, yP - E * 9.4, E * 1.2, "#3a342c"); chope(ctx, tx + E * 4, yP - E * 9.4, E * 1.1, "#3a342c"); bougie(ctx, tf, tx + E * .4, yP - E * 9.4, E * 2.6, "#d8cba8");
+    eclaire(ctx, tx - E * 16, yP - E * 10, E * 24, "#ff9a50", .8);
+    flammes(B, .55, tf);
+    B.sol = B.Y(.9);
+    B.acteurs();
+    // premier plan : poutre et lanterne, poteau, coin de table, tonneau
+    ctx = B.couche(1); const g0 = B.X(0), g1 = B.X(1), yb = Math.min(B.H, B.Y(1.03)), fp = [];
+    ctx.fillStyle = c.pre; ctx.fillRect(B.x0, -2, B.x1 - B.x0, B.Y(.04) + 2); ctx.fillRect(g1 - Uu * (R.k < 1 ? 1.4 : 3.6), 0, B.x1 - g1 + Uu * 4, B.H); if (R.k >= 1) seg(ctx, g1 - Uu * 3, B.Y(.22), g1 - Uu * 17, B.Y(.03), Uu * 2.6, c.pre);
+    const qx = g0 + Uu * (R.k < 1 ? 8 : 20), qy = B.Y(.17); chaine(ctx, qx, B.Y(.03), qx, qy - Uu * 1.4, Uu * 1, c.pre); poly(ctx, [[qx - Uu * 3, qy], [qx, qy - Uu * 2.2], [qx + Uu * 3, qy]], c.pre); ctx.fillRect(qx - Uu * 2.8, qy + Uu * 7.6, Uu * 5.6, Uu * 1.2); [-2.6, 2].forEach(d => ctx.fillRect(qx + d * Uu, qy, Uu * .6, Uu * 8));
+    ctx.fillStyle = rgba("#ffd890", .9); ctx.fillRect(qx - Uu * 2, qy, Uu * 4, Uu * 7.6); ctx.fillStyle = c.pre; ctx.fillRect(qx - Uu * .3, qy, Uu * .6, Uu * 7.6); G.glow(ctx, qx, qy + Uu * 4, Uu * 20, c.feu, .42);
+    poly(ctx, [[B.x0, yb - Uu * 9.4], [g0 + Uu * 19, yb - Uu * 8], [g0 + Uu * 22, yb - Uu * 6], [g0 + Uu * 22, B.H], [B.x0, B.H]], c.pre); chope(ctx, g0 + Uu * 5, yb - Uu * 9, Uu * 2.3, c.pre); chope(ctx, g0 + Uu * 10.6, yb - Uu * 8.7, Uu * 1.9, c.pre); bougie(ctx, fp, g0 + Uu * 16.4, yb - Uu * 8.2, Uu * 4.6, c.pre);
+    tonneau(ctx, g1 - Uu * 6, yb + Uu * 3, Uu * 17, Uu * 15, c.pre, c.pre); ctx.fillStyle = c.pre; ctx.fillRect(B.x0, yb - Uu, B.x1 - B.x0, B.H - yb + Uu);
+    flammes(B, 1, fp);
+    B.part(1, "poussiere", { x: B.X(.1), y: B.Y(.15), w: B.s.w * .8, h: B.Y(.9) - B.Y(.15) }, { n: 22, col: "#ffd9a0", scale: Uu / 7.5 });
   };
 })();
 
@@ -5009,7 +5172,7 @@ VG.sprites = (() => {
       frappe: { ex: 20, ey: 3, hx: 12, hy: -2, cou: -1.02, couL: .06, tete: .95, gueule: 0, a1x: 28, a1y: -18, a2x: 32, a2y: -8, r1x: -6, r2x: -8 },
       charge: { ex: -5, ey: 4, hx: -4, hy: 5, arc: 2, cou: -.62, tete: .62, gueule: 0 },
       garde: { cou: -.55, tete: .62, gueule: 0, ex: -5, ey: 3 }, touche: { gueule: .6 } },
-    larg: 336, haut: 206, sous: 12, ech: .3, ombreK: .18 };
+    larg: 364, haut: 224, sous: 12, ech: .3, ombreK: .17 };
 
   // lynx des Failles : ramassé sur ses épaules, l'arrière-train haut, prêt à bondir
   const LYNX = { L: 46, hE: 46, hH: 50, rR: [6, 9], rH: [8.5, 13], rM: [7, 14], rE: [8.5, 18], creux: 1, croupe: 7, croupeY: 6, pl: 8.6, herisRepos: .2,
@@ -5725,7 +5888,7 @@ VG.ui = (() => {
   const { clamp } = VG.u, el = id => document.getElementById(id), ic = n => `<svg class="ic"><use href="#i-${n}"/></svg>`;
   let jeu, modeCourant = "titre", vuLog = 0, cartoucheT = 0;
 
-  function init() { jeu = el("jeu"); format(); addEventListener("resize", () => { clearTimeout(init.t); init.t = setTimeout(() => { format(); VG.main.rendre({ garder: true }); }, 120); }); }
+  function init() { jeu = el("jeu"); format(); addEventListener("resize", () => { clearTimeout(init.t); init.t = setTimeout(() => { format(); const f = document.activeElement; if (f && f.matches && f.matches("input,textarea")) return; if (VG.main.enJeu) VG.main.rendre({ garder: true }); else VG.main.versTitre(); }, 120); }); }
   // Format d'écran : portrait (téléphone tenu droit), paysage ; « bas » = paysage de faible hauteur (téléphone couché).
   function format() { const w = innerWidth, h = innerHeight, portrait = w < h * .95 || w < 600; jeu.classList.toggle("f-portrait", portrait); jeu.classList.toggle("f-paysage", !portrait); jeu.classList.toggle("f-bas", !portrait && h < 540); return portrait; }
   const portrait = () => jeu.classList.contains("f-portrait");
@@ -5735,7 +5898,7 @@ VG.ui = (() => {
   function hud() { if (!S.origine) return; const pm = pvMax(), r = clamp(S.pv / pm, 0, 1);
     el("h-niv").textContent = S.niv; el("h-pv").style.width = r * 100 + "%"; el("h-pv").parentNode.classList.toggle("bas", r < .35); el("h-xp").style.width = clamp(S.xp / xpNeed(S.niv), 0, 1) * 100 + "%"; el("h-pvt").textContent = S.pv + " / " + pm;
     const nuit = S.moment === 1, hj = el("h-jour"); hj.classList.toggle("nuit", nuit);
-    hj.innerHTML = ic(nuit ? "lune" : "soleil") + (S.post ? `<span>Après · j <b>${S.jour}</b></span>` : `<span>Jour <b>${Math.min(S.jour, JOURS)}</b>/${JOURS}</span><span class="fil"><i style="width:${clamp(S.jour / JOURS, 0, 1) * 100}%"></i></span>`);
+    hj.innerHTML = ic(nuit ? "lune" : "soleil") + (S.post ? `<span><em>Après · </em>j <b>${S.jour}</b></span>` : `<span><em>Jour </em><b>${Math.min(S.jour, JOURS)}</b>/${JOURS}</span><span class="fil"><i style="width:${clamp(S.jour / JOURS, 0, 1) * 100}%"></i></span>`);
     el("h-stats").innerHTML = `<span class="r" title="Renom : ${renomNom(S.renom)}">${ic("etoile")}${S.renom}<em>renom</em></span><span class="o" title="Or">${ic("piece")}${S.or || 0}</span><span class="v" title="Varek, à votre dernière visite">${ic("tour")}${S.varek.vu < 0 ? "?" : S.varek.vuNiv}<em>Varek</em></span>`;
     const neufs = Math.max(0, S.log.length - vuLog), p = el("h-new"); p.hidden = !neufs || vuLog === 0; p.textContent = neufs > 9 ? "9+" : neufs; }
 
@@ -6049,7 +6212,7 @@ VG.combat = (() => {
     // ce qu'il prépare
     let bulle = ""; if (!dr && c.pv > 0) { const vu = tellVisible(c), I = vu ? INTENT[c.intent] : null; bulle = `<div class="bulle ${vu ? "vu i-" + c.intent : "cache"}">${ic(I ? I[0] : "doute")}<div><b>${I ? I[1] : "Intention cachée"}</b><span>${vu ? "Réponse sûre : " + esc(PARADE[c.intent]) : "Observer révèle ses coups"}</span></div></div>`; }
     const extra = lect ? [...lect.children].filter((x, i) => dr || i >= 2).map(x => x.outerHTML).join("") : "";
-    ui.el("c-lecture").innerHTML = bulle + (extra ? `<div class="note">${dr && lect ? lect.innerHTML : extra}</div>` : "");
+    ui.el("c-lecture").innerHTML = bulle + (extra ? `<div class="note${dr ? " dr" : ""}">${dr && lect ? lect.innerHTML : extra}</div>` : "");
     // commandes
     const B = boutons.map(b => ({ a: b.dataset.a, k: b.dataset.a.slice(2), t: (b.querySelector(".t") || {}).textContent || "", d: (b.querySelector(".d") || {}).innerHTML || "", c: (b.querySelector(".c") || {}).textContent || "", off: b.disabled }));
     const coeur = ["att", "def", "esq", "obs"], princ = B.filter(b => coeur.includes(b.k)), autres = B.filter(b => !coeur.includes(b.k));
@@ -6273,7 +6436,7 @@ VG.main = (() => {
     if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register("sw.js").catch(() => {});
     window.addEventListener("error", e => console.error("Valdren :", e.message)); }
 
-  return { demarrer, rendre, action, avant, apres, entrer, get enJeu() { return enJeu; } };
+  return { demarrer, rendre, action, avant, apres, entrer, versTitre, get enJeu() { return enJeu; } };
 })();
 VG.ui.rafraichirScene = () => VG.main.rendre({ garder: true });
 VG.main.demarrer();
