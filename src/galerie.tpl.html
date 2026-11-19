@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Valdren · planche de contrôle</title>
+<style>html,body{margin:0;height:100%;background:#0b100e;overflow:hidden}canvas{display:block;width:100vw;height:100vh}
+#i{position:fixed;left:8px;bottom:6px;font:12px ui-monospace,monospace;color:#9aa89f;background:#0008;padding:2px 6px;border-radius:4px}</style></head>
+<body><canvas id="c"></canvas><div id="i"></div>
+<!--__JS__-->
+<script>
+// Planche de contrôle des dessins (outil de développement).
+//   ?decor=village&nuit=1                 un décor plein cadre
+//   ?decor=lisiere&sprites=loup,ours      des personnages posés dans le décor (le premier regarde à droite)
+//   ?pose=att&p=.5                        pose figée (att, garde, esq, touche, chute, tir, charge) et avancement
+//   ?safe=0,0,1,.55                       fenêtre utile (x,y,l,h en fractions), pour simuler l'interface
+//   ?t=3.2                                instant figé (sinon animé)
+(() => { const q = new URLSearchParams(location.search), cv = document.getElementById("c"), ctx = cv.getContext("2d");
+  const dpr = Math.min(2, devicePixelRatio || 1), W = innerWidth * dpr, H = innerHeight * dpr; cv.width = W; cv.height = H;
+  const sf = (q.get("safe") || "0,0,1,1").split(",").map(Number), safe = { x: sf[0] * W, y: sf[1] * H, w: sf[2] * W, h: sf[3] * H };
+  const B = VG.decors.creer(q.get("decor") || "village", W, H, safe, q.get("nuit") === "1");
+  const noms = (q.get("sprites") || "").split(",").filter(Boolean), pose = q.get("pose"), pp = +(q.get("p") || .5), tf = q.get("t");
+  const acteurs = noms.map((n, i) => { const a = VG.sprites.creer(n, { seed: i }); const k = noms.length === 1 ? .5 : i / (noms.length - 1);
+    return Object.assign(a, { x: safe.x + safe.w * (noms.length === 1 ? .5 : .16 + .68 * k), y: B.sol, sens: i === 0 && noms.length > 1 ? 1 : (noms.length === 1 ? 1 : -1), st: pose ? { [pose]: pp } : {} }); });
+  document.getElementById("i").textContent = (q.get("decor") || "village") + (q.get("nuit") === "1" ? " · nuit" : " · jour") + (noms.length ? " · " + noms.join(", ") : "");
+  let t0 = performance.now(), last = t0;
+  function frame(now) { const t = tf != null ? +tf : (now - t0) / 1000, dt = Math.min(.05, (now - last) / 1000); last = now;
+    ctx.clearRect(0, 0, W, H); VG.rendu.decor(ctx, B, t, tf != null ? .016 : dt, Math.sin(t * .25) * .5, c => acteurs.forEach((a, i) => VG.rendu.acteur(c, a, i, t, B.lum, B.U)));
+    if (q.get("cadre")) { ctx.strokeStyle = "#f0f"; ctx.strokeRect(safe.x, safe.y, safe.w, safe.h); }
+    window.__pret = true; requestAnimationFrame(frame); }
+  requestAnimationFrame(frame); })();
+</script></body></html>
