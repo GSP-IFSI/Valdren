@@ -22,7 +22,7 @@ VG.scene = (() => {
     const sig = [cle, o.nuit ? 1 : 0, W, H, Math.round(safe.x), Math.round(safe.y), Math.round(safe.w), Math.round(safe.h), o.var || ""].join("|");
     if (sig !== cleB) { if (B && ctx && o.fondu !== false) { prev = prev || G.mk(W, H); if (prev.width !== W || prev.height !== H) { prev.width = W; prev.height = H; } const px = prev.getContext("2d"); px.clearRect(0, 0, W, H); try { px.drawImage(cv, 0, 0, W, H); fondu = 1; } catch (e) { fondu = 0; } }
       B = VG.decors.creer(cle, W, H, safe, o.nuit, o.donnees); cleB = sig; }
-    if (o.acteurs !== undefined) poser(o.acteurs || []);
+    if (o.acteurs !== undefined) poser(o.acteurs || []); else placer();
     return B; }
 
   // Pose des personnages : [{nom, opts, u, sens, k (échelle relative), st, cle}]. Les sprites déjà en scène sont repris (pas de saut).

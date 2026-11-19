@@ -41,10 +41,10 @@ VG.combat = (() => {
   // ---------- entrée en combat ----------
   function entrer(c) { courant = c; aff = { h: S.pv, e: c.pv }; joue = false; accel = false; journal = c.lignes.slice();
     const es = spritesEnnemi(c), L = [], h = spriteHeros(); let ia = 0;
-    c.allies.slice(0, 4).forEach((a, i) => spriteAllie(a).forEach((nom, j) => { if (ia >= 4) return; L.push({ nom, cle: "allie" + i + "-" + j, opts: { seed: 10 + ia }, u: .13 - ia * .055 + (ia % 2 ? .02 : 0), sens: 1, k: .8, plan: -2 - ia, yDec: -1.2 - (ia % 2) * 1.2, allie: i }); ia++; }));
-    L.push({ nom: h.nom, cle: "heros", opts: h.opts, u: ia ? .3 : .26, sens: 1, plan: 2 });
-    es.slice(1).forEach((e, i) => L.push({ nom: e.nom, cle: "fig" + i, opts: e.opts || {}, u: .86 + i * .07, sens: -1, k: .86, plan: -1 - i, yDec: -1.5 - i }));
-    L.push({ nom: es[0].nom, cle: "ennemi", opts: es[0].opts || {}, u: es.length > 1 ? .7 : .73, sens: -1, plan: 1 });
+    c.allies.slice(0, 4).forEach((a, i) => spriteAllie(a).forEach((nom, j) => { if (ia >= 4) return; L.push({ nom, cle: "allie" + i + "-" + j, opts: { seed: 10 + ia }, u: .13 - ia * .055 + (ia % 2 ? .02 : 0), sens: 1, k: 1, plan: -2 - ia, yDec: -1.2 - (ia % 2) * 1.2, allie: i }); ia++; }));
+    L.push({ nom: h.nom, cle: "heros", opts: h.opts, u: ia ? .3 : .26, sens: 1, plan: 2, k: 1.25 });
+    es.slice(1).forEach((e, i) => L.push({ nom: e.nom, cle: "fig" + i, opts: e.opts || {}, u: i ? .57 : .86, sens: -1, k: 1.08, plan: -1 - i, yDec: -1.5 - i }));
+    L.push({ nom: es[0].nom, cle: "ennemi", opts: es[0].opts || {}, u: es.length > 1 ? .7 : .73, sens: -1, plan: 1, k: 1.25 });
     cadrer(); const A = SC().poser(L); heros = A.find(a => a.cle === "heros"); enn = A.find(a => a.cle === "ennemi"); allies = A.filter(a => a.cle.startsWith("allie")); figurants = A.filter(a => a.cle.startsWith("fig"));
     L.forEach(d => { if (d.allie != null) A.find(a => a.cle === d.cle).allieIdx = d.allie; });
     [heros, enn].concat(allies, figurants).forEach(a => { a.dx = 0; a.dy = 0; a.st = {}; });
@@ -151,7 +151,7 @@ VG.combat = (() => {
     } }
 
   // a : action « c-… ». Fait jouer le moteur, puis raconte le tour.
-  async function jouer(a) { if (joue) { accel = true; return; } const c = S.scene.c; if (!c) return; const avant = { h: S.pv, e: c.pv, arme: S.arme };
+  async function jouer(a) { if (joue) { accel = true; return; } if (!a) return; const c = S.scene.c; if (!c) return; const avant = { h: S.pv, e: c.pv, arme: S.arme }, av = VG.main.avant();
     MOTEUR_action(a); const fini = S.scene.t !== "combat" || S.scene.c !== c, lignes = c.lignes.slice();
     aff.h = avant.h; aff.e = avant.e; journal = lignes; joue = true; accel = false;
     VG.ui.el("combat-ui").classList.add("joue"); VG.ui.el("c-cmd").querySelectorAll("button").forEach(b => b.disabled = true);
@@ -160,7 +160,7 @@ VG.combat = (() => {
     // fin du tour : on relâche les postures
     anim(heros.st, "garde", 0, 160); heros.st.esq = 0; enn.st.att = 0; if (!fini) { aff.h = S.pv; aff.e = c.pv; }
     if (fini) await denouement(c, a, avant);
-    joue = false; accel = false; VG.main.rendre({}); }
+    joue = false; accel = false; VG.main.apres(av, a); }
 
   async function denouement(c, a, avant) { const t = S.scene.t, sc = S.scene;
     if (c.soumis && t === "soumis") { VG.son.jouer("tomber"); await anim(enn.st, "chute", 1, 700); await pause(200); return; }

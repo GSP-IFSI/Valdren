@@ -60,6 +60,7 @@ VG.sprites = (() => {
     joie: { hx: 0, hy: -46, tor: -.04, hd: -.18, wx: 5, wy: -27, wa: -1.5, ox: 5, oy: 13, cl: 0 },
     // arc : la main libre tient l'arc tendu devant, la main d'arme tire la corde
     viser: { hx: -1, hy: -45, tor: .02, hd: 0, fFx: 15, fBx: -13, wx: -5, wy: -3, wa: 0, ox: 22, oy: -4, cl: 0 },
+    civil: { hx: 0, hy: -47, tor: .03, hd: 0, fFx: 6, fBx: -5, wx: 2, wy: 25, wa: 1.25, ox: -1, oy: 26, cl: 0 },
     lache: { hx: 0, hy: -45, tor: .06, hd: 0, fFx: 15, fBx: -13, wx: -12, wy: -4, wa: 0, ox: 23, oy: -4, cl: .3 },
   };
   const CLES = Object.keys(REPOS);
@@ -70,7 +71,7 @@ VG.sprites = (() => {
     const c = Object.assign({ corps: "#1f2a2b", corps2: "#141c1d", peau: "#4a3a30", cuir: "#2a2019", metal: "#5f6a70", metal2: "#8a8f8a", bois: "#33271c", accent: P.or, cape: null, cheveux: "#17120f" }, o.col || {});
     const LT = 31, LB = 15, LA = 14, LC = 24, LJ = 24; // tronc, bras, avant-bras, cuisse, jambe
     function draw(ctx, t, st) { st = st || {}; const A = st.att || 0;
-      const w = { garde: smooth(st.garde || 0), esq: bell(st.esq || 0, .35), touche: bell(st.touche || 0, .25), chute: smooth(st.chute || 0), charge: smooth(st.charge || 0), joie: smooth(st.joie || 0) };
+      const w = { civil: Math.max(o.civil ? 1 : 0, st.calme || 0) * (1 - smooth(Math.max(st.garde || 0, st.touche || 0, st.chute || 0, st.joie || 0, A, st.charge || 0))), garde: smooth(st.garde || 0), esq: bell(st.esq || 0, .35), touche: bell(st.touche || 0, .25), chute: smooth(st.chute || 0), charge: smooth(st.charge || 0), joie: smooth(st.joie || 0) };
       if (arc) { const T = st.tir || A; w.viser = bell(T, .55) * (T < .62 ? 1 : 0) + (T >= .62 ? 0 : 0); w.viser = T > 0 && T < .62 ? smooth(T / .25) : 0; w.lache = T >= .62 ? 1 - smooth((T - .62) / .38) : 0; }
       else { w.elan = bell(clamp(A / .42, 0, 1), .6) * (A < .42 ? 1 : 0); w.frappe = A >= .3 ? bell(clamp((A - .3) / .7, 0, 1), .22) : 0; }
       const p = melange(w), vivant = 1 - w.chute; if (o.bouclier) { p.ox += 7 * vivant; p.oy -= 8 * vivant; } else if (o.arme2) { p.ox += 6 * vivant; p.oy -= 5 * vivant; }
@@ -189,6 +190,10 @@ VG.sprites = (() => {
   H("guilde", { arme: "epee", bouclier: "ecu", casque: "bassinet", plastron: true, tabard: T.acier, col: { corps: "#1c252b", corps2: "#12181d", metal: "#55656e", accent: P.acier, cape: "#223a4e" } });
   H("guilde-lance", { arme: "lance", casque: "chapel", plastron: true, tabard: T.acier, col: { corps: "#1c252b", corps2: "#12181d", metal: "#55656e", accent: P.acier } });
   H("soldat", { arme: "epee", casque: "chapel", col: { corps: "#22201d", corps2: "#151412", accent: "#7c6a4a" } });
+  // gens de Valdren
+  H("ivan", { civil: true, arme: "masse", cheveux: "ras", barbe: true, carrure: 1.25, taille: 1.04, tabard: "#3a2a1c", col: { corps: "#2a231d", corps2: "#1a1511", accent: "#8a6a3a", cheveux: "#1c1611", peau: "#5e4a3a" } });
+  H("hilda", { civil: true, arme: "rien", cheveux: "tresse", carrure: .9, taille: .96, col: { corps: "#27301f", corps2: "#181e13", cape: "#33402a", capeBord: "#8aa06a", accent: "#8aa06a", cheveux: "#231a14", peau: "#63503f" } });
+  H("odile", { civil: true, arme: "rien", cheveux: "long", carrure: .95, taille: .97, tabard: "#4a2f2a", col: { corps: "#2c2226", corps2: "#1b1517", accent: "#c9a45c", cheveux: "#5a3a26", peau: "#63503f" } });
   // l'ogre des Failles : un colosse voûté
   H("ogre", { arme: "gourdin", cheveux: "ras", carrure: 1.75, taille: 1.6, yeux: "#ffb35a", fourrure: "#1b1612", col: { corps: "#262019", corps2: "#17130f", peau: "#3b3a2c", accent: "#5a4a32", bois: "#2a2018" } });
 

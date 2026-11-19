@@ -182,8 +182,8 @@ VG.decors = (() => {
 
   // ---------- fabrique ----------
   // safe = {x,y,w,h} : fenêtre utile. Renvoie B avec B.items, la liste ordonnée à composer.
-  function creer(cle, W, H, safe, nuit) { const M = Math.round(Math.max(W, H) * .035);
-    const B = { cle, W, H, M, s: safe, nuit: !!nuit, r: rng(cle + (nuit ? "/n" : "/j")), items: [], x0: -M, x1: W + M, U: safe.h / 100,
+  function creer(cle, W, H, safe, nuit, donnees) { const M = Math.round(Math.max(W, H) * .035);
+    const B = { cle, donnees, W, H, M, s: safe, nuit: !!nuit, r: rng(cle + (nuit ? "/n" : "/j")), items: [], x0: -M, x1: W + M, U: safe.h / 100,
       X: u => safe.x + u * safe.w, Y: v => safe.y + v * safe.h, sol: safe.y + safe.h * .9, lum: { col: "#ffd9a0", dir: 1, amb: "#2a2a2a", brume: "#b9c9c4" },
       couche(p) { const c = G.mk(W + 2 * M, H), ctx = c.getContext("2d"); ctx.translate(M, 0); B.items.push({ c, p }); return ctx; },
       dyn(p, draw) { B.items.push({ p, draw }); },

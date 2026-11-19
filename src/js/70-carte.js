@@ -12,7 +12,7 @@ VG.carte = (() => {
   const dispo = z => DISPO[z.w / z.h > 1.1 ? "paysage" : "portrait"];
 
   // ---------- peinture ----------
-  VG.decors.D.carte = B => { const n = B.nuit, Uu = B.U, d = B.donnees || {}, N = d.noeuds || DISPO.paysage, et = d.etat || {};
+  VG.decors.D.carte = B => { const n = B.nuit, Uu = Math.min(B.s.h, B.s.w * 1.2) / 100, d = B.donnees || {}, N = d.noeuds || DISPO.paysage, et = d.etat || {};
     const c = n ? { f1: "#101a2e", f2: "#060a14", enc: "#b7c6ea", eau: "#2b4a70", bois: "#1d3a4a", roche: "#27324a", terre: "#18233a" }
                 : { f1: "#232d22", f2: "#0c120e", enc: "#e3c27a", eau: "#3f6474", bois: "#2f5444", roche: "#3b3a30", terre: "#2a3326" };
     B.lum = { col: n ? P.lune : "#ffd9a0", dir: 1, amb: "#1a2030", brume: "#8fa5b0" }; B.sol = B.Y(2);

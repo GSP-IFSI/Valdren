@@ -1,0 +1,19 @@
+{
+  "name": "L'épreuve de Valdren",
+  "short_name": "Valdren",
+  "description": "Chroniques des Failles — RPG au combat tour par tour. Trente-cinq jours avant l'offensive.",
+  "lang": "fr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "any",
+  "background_color": "#0b100e",
+  "theme_color": "#0b100e",
+  "categories": ["games"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

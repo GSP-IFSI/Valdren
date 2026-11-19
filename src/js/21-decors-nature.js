@@ -315,4 +315,235 @@
     B.part(1, "cendre", { x: x0, y: 0, w: L, h: Y(1) }, { n: 54, col: n ? "#8d8088" : "#cfc6ba", scale: Uu / 7.2 });
     B.part(1, "braise", { x: X(.55), y: Y(.45), w: X(1.02) - X(.55), h: Y(.92) - Y(.45) }, { n: n ? 16 : 9, scale: Uu / 7.2 });
   };
+
+  // plafond de caverne : bord inférieur fractal. o = {freq, jag, arc (voûte plus basse sur les bords), breche: {x, l}}. Renvoie y(x).
+  function plafond(ctx, B, v, amp, seed, fill, o = {}) { const Uu = B.U, pts = [], pas = 3, xm = B.X(.5), dm = (B.x1 - B.x0) / 2; ctx.beginPath(); ctx.moveTo(B.x0, -Uu * 16);
+    for (let x = B.x0; x <= B.x1 + pas; x += pas) { let y = B.Y(v) + (fbm1(x / (Uu * (o.freq || 40)), seed, 4) - .5) * 2 * amp * Uu + (fbm1(x / (Uu * 5), seed + 91, 2) - .5) * (o.jag || 0) * Uu;
+      if (o.arc) y += (x > xm && o.arcD != null ? o.arcD : o.arc) * Uu * Math.pow((x - xm) / dm, 2);
+      if (o.breche) { const d = (x - o.breche.x) / o.breche.l; y -= Math.exp(-d * d * d * d) * (y + Uu * 16); }
+      pts.push([x, y]); ctx.lineTo(x, y); }
+    ctx.lineTo(B.x1 + pas, -Uu * 16); ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
+    return x => pts[clamp(Math.round((x - B.x0) / pas), 0, pts.length - 1)][1]; }
+  // pic de roche : stalagmite (h > 0) ou stalactite (h < 0)
+  const pic = (ctx, x, y, w, h, col, dx = 0) => { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x - w, y); ctx.quadraticCurveTo(x - w * .3, y - h * .35, x + dx, y - h); ctx.quadraticCurveTo(x + w * .35, y - h * .35, x + w, y); ctx.closePath(); ctx.fill(); };
+
+  // ---------- L'antre du dragon ----------
+  // La moitié droite du plan moyen reste vide et lumineuse : c'est là que se tient la bête.
+  D.antre = B => { const n = B.nuit, Uu = B.U, X = B.X, Y = B.Y, x0 = B.x0, x1 = B.x1, L = x1 - x0;
+    const c = n ? { fond: "#08060a", fond2: "#22151b", lueur: "#7c3c2a", roc: "#0e0a0d", roc2: "#2c1b1f", sol: "#130c0e", pre: "#030203", brume: "#84483a", rai: "#a9c8ff", ciel: "#16264a", or: "#b8954e", or2: "#4c3a22" }
+                : { fond: "#0d0907", fond2: "#2c1b12", lueur: "#8c5432", roc: "#120d0b", roc2: "#35241a", sol: "#17100c", pre: "#040302", brume: "#9a6844", rai: "#ffe6b0", ciel: "#f3e2b4", or: "#d6ab52", or2: "#5e4520" };
+    B.lum = { col: n ? "#b9d0ff" : "#ffdca0", dir: -1, amb: n ? "#2a1416" : "#3a2010", brume: c.brume };
+    const bx = X(.27), bl = Uu * 8, yS = Y(.875);
+    // le fond de la grotte : pénombre chaude, le ciel par la brèche du toit
+    let ctx = B.couche(0); ctx.fillStyle = G.lin(ctx, 0, 0, 0, Y(.9), [[0, c.fond], [.45, c.fond2], [1, c.lueur]]); ctx.fillRect(x0, 0, L, B.H);
+    ctx.fillStyle = G.lin(ctx, 0, 0, 0, Y(.1), [[0, c.ciel], [1, mixc(c.ciel, c.fond2, .35)]]); ctx.beginPath(); ctx.ellipse(bx, 0, bl * 2.2, Y(.1), 0, 0, TAU); ctx.fill();
+    if (n) { G.stars(ctx, bx - bl * 1.8, 0, bx + bl * 1.8, Y(.12), 16, 5, "#dfe8ff"); G.astre(ctx, bx + Uu * 1.5, Y(.045), Uu * 2, "#eef3ff", "#8fb1ff", true); } else G.glow(ctx, bx, 0, Uu * 13, "#fff6d8", .5);
+    G.glow(ctx, X(.68), Y(.62), Uu * 78, P.braise, n ? .28 : .24); G.glow(ctx, X(.76), Y(.76), Uu * 42, P.feu, n ? .2 : .17); G.glow(ctx, X(.18), Y(.8), Uu * 42, P.or, .1);
+    B.dyn(0, (x, t) => G.glow(x, X(.74), Y(.74), Uu * (34 + Math.sin(t * .7) * 3), P.feu2, (n ? .1 : .07) * (.7 + .3 * Math.sin(t * 1.6) * Math.sin(t * .53))));
+    // parois et concrétions du fond, pâlies par la lueur : hautes à gauche, basses à droite
+    ctx = B.couche(.12); const lo = mixc(c.roc2, c.lueur, .5), rc = rng("a-col");
+    const yP1 = plafond(ctx, B, .2, 4, 11, lo, { jag: 1.5, arc: 12, arcD: 5, breche: { x: bx + Uu, l: bl * 1.15 } });
+    stalactites(ctx, x0, x1, yP1, Uu * 11, lo, rc, Math.round(L / (Uu * 7)));
+    [[.02, 40, 5.5], [.11, 24, 3.6], [.19, 12, 2.6], [.4, 8, 2.2], [.475, 15, 2.8], [.57, 6, 2], [.66, 4, 1.8], [.8, 5, 2.2], [.985, 34, 5.5]].forEach(([u, h, w]) => pic(ctx, X(u), Y(.87), Uu * w, Uu * h, lo, rc.r(-1, 1) * Uu));
+    pic(ctx, X(.02), yP1(X(.02)) - Uu, Uu * 5, -Uu * 22, lo); pic(ctx, X(.985), yP1(X(.985)) - Uu, Uu * 5, -Uu * 20, lo);
+    nappe(ctx, B, Y(.4), Y(.98), c.brume, n ? .26 : .3, .75);
+    // la voûte et sa brèche, le rai de lumière
+    ctx = B.couche(.3); const rv = rng("a-voute"), cv = G.lin(ctx, 0, 0, 0, Y(.42), [[0, c.roc], [1, mixc(c.roc, c.roc2, .8)]]);
+    const yP2 = plafond(ctx, B, .09, 4, 23, cv, { jag: 2, arc: 15, arcD: 6, breche: { x: bx, l: bl } });
+    stalactites(ctx, x0, X(.17), yP2, Uu * 20, cv, rv, 5); stalactites(ctx, X(.36), X(.62), yP2, Uu * 8, cv, rv, 6); stalactites(ctx, X(.62), x1, yP2, Uu * 7, cv, rv, 8);
+    G.shafts(ctx, bx, -Uu * 3, yS + Uu * 5, bl * 1.8, c.rai, n ? .26 : .3, 7, 7, -.1);
+    ovale(ctx, bx + yS * .1, yS - Uu * .5, Uu * 16, Uu * 3.4, c.rai, n ? .3 : .34);
+    B.part(.3, "poussiere", { x: bx - bl, y: Y(.05), w: bl * 3.4, h: yS - Y(.05) }, { n: 24, col: c.rai });
+    // le trésor : un amas d'or à gauche, qui s'étale en nappe basse vers la droite
+    ctx = B.couche(.5); const ro = rng("a-or"), et = [];
+    const prof = x => yS - Uu * (19 * Math.exp(-Math.pow((x - X(.07)) / (Uu * 26), 2)) + 6 * Math.exp(-Math.pow((x - X(.41)) / (Uu * 11), 2)) + 4 * Math.exp(-Math.pow((x - X(.97)) / (Uu * 15), 2)) + 1.5 + (fbm1(x / (Uu * 7), 41, 3) - .5) * 2.2);
+    // objets à demi enfouis (dessinés avant l'or, qui recouvre leur pied)
+    const co = mixc(c.roc, c.or2, .4); ctx.strokeStyle = co; ctx.fillStyle = co; ctx.lineCap = "round";
+    const epee = (x, h, a) => { ctx.save(); ctx.translate(x, prof(x) + Uu); ctx.rotate(a); ctx.lineWidth = Uu * .55; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -h * .76); ctx.stroke(); ctx.lineWidth = Uu * .4; ctx.beginPath(); ctx.moveTo(0, -h * .76); ctx.lineTo(0, -h); ctx.moveTo(-h * .15, -h * .76); ctx.lineTo(h * .15, -h * .76); ctx.stroke(); ctx.beginPath(); ctx.arc(0, -h * 1.03, Uu * .5, 0, TAU); ctx.fill(); ctx.restore(); };
+    epee(X(.045), Uu * 9, .2); epee(X(.165), Uu * 7.5, -.28); epee(X(.4), Uu * 6.5, .14);
+    ctx.save(); ctx.translate(X(.1), prof(X(.1)) + Uu * .5); ctx.rotate(-.16); ctx.fillRect(-Uu * 3.4, -Uu * 3.4, Uu * 6.8, Uu * 4); ctx.beginPath(); ctx.ellipse(0, -Uu * 3.4, Uu * 3.4, Uu * 1.7, 0, Math.PI, TAU); ctx.fill(); ctx.restore();
+    ctx.beginPath(); ctx.arc(X(.215), prof(X(.215)) - Uu * .6, Uu * 2.6, 0, TAU); ctx.fill();
+    ctx.save(); ctx.translate(X(.03), prof(X(.03)) + Uu); ctx.rotate(-.1); ctx.lineWidth = Uu * .4; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -Uu * 17); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, -Uu * 16.6); ctx.lineTo(Uu * 6, -Uu * 15.4); ctx.lineTo(Uu * 3.4, -Uu * 14); ctx.lineTo(Uu * 5.4, -Uu * 12.4); ctx.lineTo(0, -Uu * 12); ctx.closePath(); ctx.fill(); ctx.restore();
+    const tas = () => { ctx.beginPath(); ctx.moveTo(x0, B.H); for (let x = x0; x <= x1 + 3; x += 3) ctx.lineTo(x, prof(x)); ctx.lineTo(x1 + 3, B.H); ctx.closePath(); };
+    tas(); ctx.fillStyle = G.lin(ctx, 0, yS - Uu * 20, 0, yS + Uu * 3, [[0, c.or], [.5, mixc(c.or, c.or2, .55)], [1, c.or2]]); ctx.fill();
+    ctx.save(); tas(); ctx.clip();
+    for (let i = 0; i < 560; i++) { const x = lerp(x0, x1, ro()), ys = prof(x), k = Math.pow(ro(), 1.5), y = ys + Uu * .2 + k * (yS + Uu * 2 - ys), cl = ro() < .45;
+      ctx.fillStyle = cl ? rgba(mix(c.or, "#fff3c0", .35), ro.r(.25, .7)) : rgba(c.or2, ro.r(.3, .75)); ctx.beginPath(); ctx.ellipse(x, y, Uu * ro.r(.3, .62), Uu * ro.r(.12, .24), ro.r(-.4, .4), 0, TAU); ctx.fill();
+      if (cl && k < .5 && et.length < 30 && ro() < .2) et.push([x, y, ro.r(.7, 1.6), ro.r(0, TAU)]); }
+    ctx.strokeStyle = rgba(mix(c.or, "#fff3c0", .4), .55); ctx.lineWidth = Math.max(1, Uu * .22); ctx.beginPath(); for (let x = x0; x <= x1 + 3; x += 3) ctx.lineTo(x, prof(x) + Uu * .1); ctx.stroke();
+    ovale(ctx, bx + yS * .1, prof(bx + yS * .1) + Uu * 2, Uu * 15, Uu * 6, c.rai, n ? .3 : .36); ctx.restore();
+    ovale(ctx, X(.1), yS - Uu * 9, Uu * 34, Uu * 13, P.or, n ? .07 : .1);
+    const cos = mixc(P.os, c.fond2, .5); cotes(ctx, X(.5), yS + Uu * .4, Uu * 9, Uu * 3.6, cos, ro, 6); crane(ctx, X(.575), yS + Uu * .6, Uu * 3.2, cos, 1);
+    // scintillements : une trentaine de pièces qui accrochent la lumière, chacune à son rythme
+    B.dyn(.5, (x, t) => { const tile = G.glowTile("#fff1c4"); x.save(); x.globalCompositeOperation = "lighter"; x.fillStyle = "#fff8dc";
+      for (let i = 0; i < et.length; i++) { const e = et[i], a = Math.pow(Math.max(0, Math.sin(t * e[2] + e[3])), 8); if (a < .04) continue; const d = Uu * (.9 + 1.5 * a);
+        x.globalAlpha = a * .8; x.drawImage(tile, e[0] - d / 2, e[1] - d / 2, d, d); x.fillRect(e[0] - d * .6, e[1] - .5, d * 1.2, 1); x.fillRect(e[0] - .5, e[1] - d * .6, 1, d * 1.2); } x.restore(); });
+    // le sol de roche, semé de pièces
+    ctx = B.couche(.7); terre(ctx, B, .868, 1, 61, [[0, mixc(c.sol, c.lueur, .55)], [.25, mixc(c.sol, c.lueur, .14)], [1, mixc(c.sol, "#000", .5)]], 1.6, .4);
+    const rs = rng("a-sol"); for (let i = 0; i < 80; i++) { const k = rs(), cl = rs() < .4; ctx.fillStyle = cl ? rgba(mix(c.or, "#fff3c0", .2), rs.r(.3, .7)) : rgba(mix(c.or, c.or2, .6), rs.r(.4, .8)); ctx.beginPath(); ctx.ellipse(lerp(x0, x1, rs()), lerp(Y(.885), Y(.99), k), Uu * rs.r(.35, .6) * (.8 + k * .6), Uu * rs.r(.12, .2) * (.8 + k * .6), rs.r(-.3, .3), 0, TAU); ctx.fill(); }
+    ovale(ctx, bx + yS * .1 + Uu * 2, Y(.9), Uu * 15, Uu * 2.6, c.rai, n ? .16 : .2);
+    B.sol = Y(.9);
+    B.acteurs();
+    // premier plan : concrétions noires dans les coins, braises qui montent
+    ctx = B.couche(1); const rp = rng("a-pre"), yB = Y(1);
+    const yP3 = plafond(ctx, B, -.03, 2.5, 37, c.pre, { jag: 2, arc: 17, arcD: 9 });
+    stalactites(ctx, x0, X(.12), yP3, Uu * 30, c.pre, rp, 4); stalactites(ctx, X(.94), x1, yP3, Uu * 15, c.pre, rp, 3); stalactites(ctx, X(.12), X(.94), yP3, Uu * 6, c.pre, rp, 10);
+    pic(ctx, x0 + Uu * 3, yB + Uu, Uu * 5, Uu * 30, c.pre, Uu); pic(ctx, x0 + Uu * 10, yB + Uu, Uu * 3.4, Uu * 15, c.pre); pic(ctx, x1 - Uu * 3, yB + Uu, Uu * 5, Uu * 25, c.pre, -Uu); pic(ctx, x1 - Uu * 10, yB + Uu, Uu * 3, Uu * 12, c.pre);
+    O.rochers(ctx, x0, x1, yB + Uu, Uu * 3.6, c.pre, rp, 12);
+    socle(ctx, B, c.pre);
+    B.part(1, "braise", { x: X(.3), y: Y(.5), w: X(1.02) - X(.3), h: Y(.96) - Y(.5) }, { n: 26, scale: Uu / 7.2 });
+  };
+
+  // bois de cerf : deux merrains et leurs andouillers
+  function bois(ctx, x, y, s, col) { [-1, 1].forEach(k => { const m = []; for (let i = 0; i <= 10; i++) { const q = i / 10; m.push([x + k * s * (.1 + .68 * Math.sin(q * 2)), y - s * 1.25 * q]); }
+    G.trait(ctx, m, s * .085, s * .03, col);
+    [[2, .44], [4, .4], [6, .32], [8, .2]].forEach(([i, l]) => { const a = m[i]; G.trait(ctx, courbe(a, [a[0] + k * s * .07, a[1] - s * l * .5], [a[0] - k * s * .07, a[1] - s * l], 6), s * .05, s * .014, col); }); }); }
+  // la chose qui veille entre les arbres : épaules étroites, tête longue, grands bois (s = hauteur d'épaule)
+  function veilleur(ctx, x, y, s, col) { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x - s * .5, y); ctx.quadraticCurveTo(x - s * .46, y - s * .78, x - s * .12, y - s * .92); ctx.lineTo(x - s * .09, y - s * 1.12);
+    ctx.quadraticCurveTo(x - s * .15, y - s * 1.3, x, y - s * 1.36); ctx.quadraticCurveTo(x + s * .15, y - s * 1.3, x + s * .09, y - s * 1.12); ctx.lineTo(x + s * .12, y - s * .92); ctx.quadraticCurveTo(x + s * .46, y - s * .78, x + s * .5, y); ctx.closePath(); ctx.fill();
+    bois(ctx, x, y - s * 1.3, s * .62, col); }
+
+  // ---------- Campement dans les bois noirs ----------
+  D.camp = B => { const n = B.nuit, Uu = B.U, X = B.X, Y = B.Y, x0 = B.x0, x1 = B.x1, L = x1 - x0;
+    const c = n ? { haut: "#04070b", milieu: "#0b1720", bas: "#1d3242", f1: "#162a3a", f2: "#0d1a26", f3: "#060c13", sol: "#090f13", pre: "#020405", brume: "#4d6d86", feu: P.feu }
+                : { haut: "#5a656d", milieu: "#96a1a4", bas: "#cdd5d1", f1: "#8f9c9e", f2: "#566469", f3: "#27333a", sol: "#20292c", pre: "#090e0f", brume: "#d3dbd7", feu: "#ffc27a" };
+    B.lum = { col: n ? "#ffb870" : "#e2eaee", dir: -1, amb: n ? "#0f1b27" : "#2b3538", brume: n ? "#5f6670" : c.brume };
+    const fx = X(.18), fy = Y(.878), kf = n ? 1 : .5;   // le feu : à l'aube, il n'en reste qu'une petite flamme
+    let ctx = O.ciel(B, { haut: c.haut, milieu: c.milieu, bas: c.bas, astre: n ? [.6, .15, 2.4] : null, astreCol: "#e6eefc", halo: "#7f9fd0", nuages: false, horizon: .8 });
+    G.glow(ctx, X(.58), Y(.32), Uu * 62, n ? "#6f93b4" : "#f2f6f3", n ? .16 : .3);
+    // rideaux d'arbres ; trou : zone où l'on ne plante rien
+    const rideau = (p, col, yb, pas, seed, wk, trou) => { const cx = B.couche(p), rr = rng(seed);
+      for (let x = x0 - Uu * 4; x < x1 + Uu * 4; x += Uu * rr.r(pas * .6, pas * 1.5)) { const w = Uu * rr.r(wk * .6, wk * 1.4), yy = Y(yb) + rr.r(-1, 1) * Uu, pe = rr.r(-.03, .03); if (trou && Math.abs(x - trou[0]) < trou[1]) continue; O.tronc(cx, x, -Uu * 4, yy, w, col, rr, pe); }
+      for (let x = x0; x < x1; x += Uu * rr.r(6, 12)) { G.blob(cx, x, Y(rr.r(-.05, .07)), Uu * rr.r(9, 16), Uu * rr.r(5, 9), rr.i(1, 999), .3, 18); cx.fillStyle = col; cx.fill(); } return cx; };
+    const vx = X(.525), vy = Y(.775);
+    ctx = rideau(.1, mixc(c.f1, c.bas, .4), .76, 8, "k1" + n, 1.6, [vx, Uu * 3]); O.voile(ctx, B, 0, Y(.84), c.brume, n ? .22 : .34);
+    // très loin entre les troncs : deux grands bois noirs au-dessus des fougères
+    veilleur(ctx, vx, vy, Uu * 8.5, mixc(c.f2, c.bas, n ? .2 : .3));
+    if (n) { const e = Math.max(1, Uu * .16); ctx.fillStyle = rgba("#cfe0ff", .45); ctx.fillRect(vx - Uu * .55, vy - Uu * 10.3, e, e); ctx.fillRect(vx + Uu * .4, vy - Uu * 10.3, e, e); }
+    fougeres(ctx, x0, x1, Y(.782), Uu * 4.6, mixc(c.f2, c.bas, n ? .22 : .34), rng("k-f1"), Math.round(L / (Uu * 4)));
+    ctx = rideau(.22, mixc(c.f2, c.bas, .14), .79, 13, "k2" + n, 2.8, [vx, Uu * 8]); fougeres(ctx, x0, x1, Y(.803), Uu * 5, mixc(c.f2, c.bas, .08), rng("k-f2"), Math.round(L / (Uu * 7)));
+    O.voile(ctx, B, Y(.3), Y(.86), c.brume, n ? .16 : .26);
+    // les fûts massifs de la clairière, éclairés du côté du feu
+    ctx = B.couche(.4); const gros = [[-.005, 13, .02], [.41, 8.5, -.015], [.995, 15, -.02], [.62, 5.5, .02], [.885, 6.5, 0]];
+    const futs = (k, col) => gros.forEach(([u, w, pe], i) => O.tronc(ctx, X(u) + k * (X(u) > fx ? 1 : -1) * Uu * w * .2, -Uu * 6, Y(.838), Uu * w, col, rng("k-g" + i), pe));
+    futs(0, c.f3); ctx.globalCompositeOperation = "source-atop"; ctx.fillStyle = G.rad(ctx, fx, fy - Uu * 4, 0, Uu * 62, [[0, rgba(c.feu, n ? .7 : .22)], [.4, rgba(P.feu2, n ? .26 : .08)], [1, rgba(P.feu2, 0)]]); ctx.fillRect(x0, 0, L, B.H);
+    futs(1, c.f3); ctx.globalCompositeOperation = "source-over";
+    const rk = rng("k-cime"); ctx.fillStyle = c.f3; for (let x = x0; x < x1; x += Uu * rk.r(7, 13)) { G.blob(ctx, x, Y(rk.r(-.07, .03)), Uu * rk.r(10, 17), Uu * rk.r(5, 9), rk.i(1, 999), .3, 18); ctx.fill(); }
+    ctx.strokeStyle = c.f3; ctx.lineCap = "round"; membre(ctx, X(.41) + Uu * 3, Y(.2), Uu * 13, -.35, Uu * 1.3, rng("k-b1"), 3, { tors: 1 }, []); membre(ctx, X(.62) - Uu * 2, Y(.3), Uu * 10, Math.PI + .3, Uu * 1, rng("k-b2"), 3, { tors: 1 }, []);
+    // le sol de la clairière et le bivouac
+    ctx = B.couche(.6); terre(ctx, B, .838, 1.6, 15, [[0, mixc(c.sol, c.bas, .2)], [.3, c.sol], [1, mixc(c.sol, "#000", .6)]], 1.2);
+    O.herbe(ctx, x0, x1, Y(.842), Uu * 2.4, mixc(c.sol, c.bas, .12), rng("k-h"), 1);
+    fougeres(ctx, X(.32), x1, Y(.848), Uu * 4.4, mixc(c.f3, c.sol, .4), rng("k-f3"), Math.round(L / (Uu * 16)));
+    // l'abri : une toile tendue sur une perche
+    const tx0 = X(.04), tx1 = X(.14), ty = Y(.864), th = Math.min(Uu * 11, (tx1 - tx0) * .62), txa = lerp(tx0, tx1, .42);
+    ctx.fillStyle = c.f3; ctx.beginPath(); ctx.moveTo(tx0, ty); ctx.lineTo(txa, ty - th); ctx.lineTo(tx1, ty); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = c.f3; ctx.lineWidth = Uu * .45; ctx.beginPath(); ctx.moveTo(txa - th * .14, ty - th * 1.16); ctx.lineTo(tx1 + Uu * 1.2, ty + Uu * .4); ctx.stroke();
+    ctx.fillStyle = mixc(c.f3, c.sol, .5); ctx.beginPath(); ctx.moveTo(txa + Uu * .6, ty); ctx.lineTo(txa + Uu * .2, ty - th * .62); ctx.lineTo(tx1 - Uu * 2.4, ty); ctx.closePath(); ctx.fill();
+    ctx.save(); ctx.globalCompositeOperation = "lighter"; ctx.strokeStyle = rgba(c.feu, .5 * kf); ctx.lineWidth = Math.max(1, Uu * .3); ctx.beginPath(); ctx.moveTo(txa, ty - th); ctx.lineTo(tx1, ty); ctx.stroke(); ctx.restore();
+    // le foyer : pierres, bûches croisées, trépied et marmite
+    O.rochers(ctx, fx - Uu * 3.6, fx + Uu * 3.6, fy + Uu * .7, Uu * 1.3, c.f3, rng("k-foyer"), 6);
+    ctx.strokeStyle = c.f3; ctx.lineWidth = Uu * .9; ctx.beginPath(); ctx.moveTo(fx - Uu * 3, fy); ctx.lineTo(fx + Uu * 1.6, fy - Uu * 1.8); ctx.moveTo(fx + Uu * 3, fy); ctx.lineTo(fx - Uu * 1.6, fy - Uu * 1.8); ctx.stroke();
+    ctx.lineWidth = Math.max(1, Uu * .3); ctx.beginPath(); ctx.moveTo(fx - Uu * 4.6, fy + Uu * .6); ctx.lineTo(fx + Uu * .3, fy - Uu * 10.4); ctx.moveTo(fx + Uu * 4.6, fy + Uu * .6); ctx.lineTo(fx - Uu * .3, fy - Uu * 10.4); ctx.moveTo(fx, fy - Uu * 9.8); ctx.lineTo(fx, fy - Uu * 6.2); ctx.stroke();
+    ctx.fillStyle = c.f3; ctx.beginPath(); ctx.ellipse(fx, fy - Uu * 5.2, Uu * 1.5, Uu * 1.2, 0, 0, TAU); ctx.fill();
+    ovale(ctx, fx, fy + Uu, Uu * 32, Uu * 5, c.feu, .26 * kf);
+    G.fog(ctx, x0, x1, Y(.825), Uu * 7, c.brume, n ? .13 : .2, 8, 14);
+    B.dyn(.6, (x, t) => { const fl = .8 + .2 * Math.sin(t * 9) * Math.sin(t * 5.3); ovale(x, fx, fy, Uu * 34, Uu * 7, c.feu, .13 * kf * fl); G.glow(x, fx, fy - Uu * 5, Uu * 26, P.feu2, .1 * kf * fl); G.flamme(x, fx, fy, Uu * (n ? 8 : 4), t, 3); });
+    B.part(.6, "braise", { x: fx - Uu * 2, y: fy - Uu * 16, w: Uu * 4, h: Uu * 15 }, { n: n ? 14 : 6, scale: Uu / 7.2 });
+    B.part(.6, "fumee", { x: fx - Uu, y: fy - Uu * 22, w: Uu * 2, h: Uu * 14 }, { n: 6, col: n ? "#39434f" : "#aab2b4", scale: Uu * .14 });
+    B.part(.6, "brume", { x: x0, y: Y(.7), w: L, h: Uu * 14 }, { n: 6, col: c.brume, scale: Uu * .09 });
+    B.sol = Y(.9);
+    B.acteurs();
+    // premier plan : deux troncs noirs, fougères, une branche basse
+    ctx = B.couche(1); const rp = rng("k-pre"), yB = Y(1);
+    O.tronc(ctx, x0 + Uu * 2, -Uu * 6, yB + Uu * 3, Uu * 11, c.pre, rp, .02); O.tronc(ctx, x1 - Uu, -Uu * 6, yB + Uu * 4, Uu * 13, c.pre, rp, -.03);
+    ctx.strokeStyle = c.pre; ctx.lineCap = "round"; membre(ctx, x1 - Uu * 5, Y(.16), Uu * 16, Math.PI + .25, Uu * 1.8, rng("k-b3"), 4, { tors: 1 }, []);
+    fougeres(ctx, x0, X(.2), yB + Uu, Uu * 13, c.pre, rp, 5); fougeres(ctx, X(.8), x1, yB + Uu, Uu * 13, c.pre, rp, 5); fougeres(ctx, X(.2), X(.8), yB + Uu, Uu * 6, c.pre, rp, Math.round(L / (Uu * 14)));
+    O.herbe(ctx, x0, x1, yB + Uu, Uu * 6, c.pre, rp, .6);
+    socle(ctx, B, c.pre);
+    if (n) B.part(1, "luciole", { x: X(.3), y: Y(.3), w: X(1) - X(.3), h: Y(.9) - Y(.3) }, { n: 10 });
+    B.part(1, "feuille", { x: x0, y: 0, w: L, h: Y(1) }, { n: 4, col: n ? "#2c4250" : "#5e6a66" });
+  };
+
+  // vieux moulin à vent : tour évasée, calotte, galerie, queue d'orientation, appentis. Renvoie {moyeu, fen}.
+  function moulin(ctx, x, y, h, col) { const wb = h * .21, wt = h * .13, hc = h * .8; ctx.fillStyle = col; ctx.strokeStyle = col;
+    ctx.beginPath(); ctx.moveTo(x - wb, y + 2); ctx.lineTo(x - wt, y - hc); ctx.lineTo(x + wt, y - hc); ctx.lineTo(x + wb, y + 2); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x - wt * 1.25, y - hc + h * .012); ctx.quadraticCurveTo(x - wt * 1.1, y - hc - h * .16, x + wt * .1, y - h); ctx.quadraticCurveTo(x + wt * 1.15, y - hc - h * .12, x + wt * 1.3, y - hc + h * .012); ctx.closePath(); ctx.fill();
+    const yg = y - hc * .4, wg = wb * .86 + (wb - wt) * .1; ctx.fillRect(x - wg * 1.12, yg, wg * 2.24, h * .018); ctx.fillRect(x - wg * 1.12, yg - h * .05, wg * 2.24, h * .01); for (let i = 0; i <= 7; i++) ctx.fillRect(x - wg * 1.12 + i * wg * 2.24 / 7 - h * .004, yg - h * .05, h * .008, h * .05);
+    ctx.lineWidth = h * .014; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(x + wt, y - hc - h * .04); ctx.lineTo(x + wb * 2.3, y - h * .02); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - wb * 2.3, y + 2); ctx.lineTo(x - wb * 2.3, y - h * .13); ctx.lineTo(x - wb * 1.5, y - h * .22); ctx.lineTo(x - wb * .7, y - h * .15); ctx.lineTo(x - wb * .7, y + 2); ctx.closePath(); ctx.fill();
+    return { moyeu: [x - wt * .1, y - hc - h * .05], fen: [x + wt * .15, y - hc * .64, h * .036, h * .062] }; }
+  // les quatre ailes : vergues, lattis, lambeaux de toile ; l'une est brisée
+  function ailes(ctx, x, y, R, ang, col) { ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineCap = "butt";
+    for (let i = 0; i < 4; i++) { ctx.rotate(Math.PI / 2); const Rl = i === 2 ? R * .64 : R, w = R * .2;
+      ctx.lineWidth = R * .036; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Rl, 0); ctx.stroke();
+      ctx.lineWidth = Math.max(.8, R * .013); ctx.beginPath(); ctx.moveTo(R * .22, w * .5); ctx.lineTo(Rl, w * .5); ctx.moveTo(R * .22, w); ctx.lineTo(Rl, w); for (let d = R * .22; d <= Rl + .1; d += R * .078) { ctx.moveTo(d, 0); ctx.lineTo(d, w); } ctx.stroke();
+      if (i % 2 === 0) { ctx.globalAlpha = .5; ctx.fillRect(R * .3, 0, (Rl - R * .3) * .6, w); ctx.globalAlpha = 1; } }
+    ctx.beginPath(); ctx.arc(0, 0, R * .055, 0, TAU); ctx.fill(); ctx.restore(); }
+  const borne = (ctx, x, y, w, h, col) => { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x - w, y + 2); ctx.lineTo(x - w * .9, y - h * .7); ctx.quadraticCurveTo(x - w * .1, y - h * 1.14, x + w * .8, y - h * .72); ctx.lineTo(x + w, y + 2); ctx.closePath(); ctx.fill(); };
+
+  // ---------- Route du nord et vieux moulin ----------
+  D.route = B => { const n = B.nuit, Uu = B.U, X = B.X, Y = B.Y, x0 = B.x0, x1 = B.x1, L = x1 - x0, uv = q => q.map(([u, v]) => [X(u), Y(v)]);
+    const c = n ? { haut: "#060a14", milieu: "#111d33", bas: "#2a3c58", loin: "#1a2940", ch1: "#17263b", ch2: "#101b2b", haie: "#0a121c", bati: "#070c14", sol: "#0a1018", chemin: "#34465f", pre: "#03060a", brume: "#5f7fa6", feu: "#ffb766" }
+                : { haut: "#36434c", milieu: "#989277", bas: "#edc98a", loin: "#7e8a88", ch1: "#9a9060", ch2: "#5f6142", haie: "#2c3a30", bati: "#1c2222", sol: "#2a2b1f", chemin: "#bfa574", pre: "#0b100c", brume: "#ecd6a2", feu: "#ffc37a" };
+    B.lum = { col: n ? P.lune : "#ffdca4", dir: -1, amb: n ? "#162238" : "#3a3224", brume: c.brume };
+    let ctx = O.ciel(B, { haut: c.haut, milieu: c.milieu, bas: c.bas, astre: n ? [.2, .17, 3.2] : [.17, .4, 4.4], astreCol: n ? "#eef3ff" : "#fff0cf", halo: n ? "#8fb1ff" : "#ffcf8a", nuageCol: n ? "#40557a" : "#f6dfb4", nuageA: n ? .2 : .28, nuagesN: 8, horizon: .64, seed: 4 });
+    // lointains : collines, et la palissade du fort sur sa hauteur
+    ctx = B.couche(.1);
+    G.ridge(ctx, { x0, x1, y: Y(.55), amp: Uu * 8, freq: .7, seed: 17, bottom: B.H, fill: mixc(c.loin, c.bas, .5), jag: Uu });
+    const hx = X(.84), hy = Y(.5), rf = rng("r-fort"), cfb = mixc(c.loin, c.bati, .4);
+    O.palissade(ctx, hx - Uu * 7.5, hx + Uu * 8.5, hy + Uu * .5, Uu * 2.6, cfb, rf, Uu * .55); O.tour(ctx, hx + Uu * 3, hy + Uu * .5, Uu * 1.7, Uu * 5.6, cfb, rf, { creneaux: true }); O.tour(ctx, hx - Uu * 5, hy + Uu * .5, Uu * 1.3, Uu * 3.8, cfb, rf, { fleche: 1 });
+    ctx.fillStyle = mixc(c.loin, c.bas, .3); ctx.beginPath(); ctx.moveTo(hx - Uu * 36, B.H); ctx.lineTo(hx - Uu * 36, Y(.66)); ctx.quadraticCurveTo(hx - Uu * 13, hy - Uu, hx - Uu * 8, hy); ctx.lineTo(hx + Uu * 9, hy + Uu * .4); ctx.quadraticCurveTo(hx + Uu * 16, hy + Uu * 2, hx + Uu * 42, Y(.66)); ctx.lineTo(hx + Uu * 42, B.H); ctx.closePath(); ctx.fill();
+    G.glow(ctx, hx + Uu * 3, hy - Uu * 3.4, Uu * 1.8, c.feu, n ? .8 : .3);
+    G.ridge(ctx, { x0, x1, y: Y(.615), amp: Uu * 3.4, freq: 1.3, seed: 23, bottom: B.H, fill: mixc(c.loin, c.ch1, .5) });
+    O.voile(ctx, B, Y(.4), Y(.7), c.brume, n ? .22 : .36);
+    // les champs : bandes, haies, arbres isolés, sillons
+    ctx = B.couche(.25); const rh = rng("r-haies"), ch = mixc(c.haie, c.bas, .34);
+    G.ridge(ctx, { x0, x1, y: Y(.655), amp: Uu * 2.2, freq: 1.2, seed: 31, bottom: B.H, fill: G.lin(ctx, 0, Y(.63), 0, Y(.8), [[0, mixc(c.ch1, c.bas, .3)], [1, mixc(c.ch1, c.ch2, .5)]]) });
+    haie(ctx, x0, X(.36), Y(.668), Uu * 1.7, ch, rh); haie(ctx, X(.63), x1, Y(.674), Uu * 1.8, ch, rh);
+    [[.07, 9], [.31, 6.5], [.68, 7.5], [.955, 10]].forEach(([u, h]) => O.feuillu(ctx, X(u), Y(.674), Uu * h, ch, rh));
+    ctx.strokeStyle = rgba(c.ch2, n ? .3 : .22); ctx.lineWidth = Math.max(1, Uu * .14); ctx.beginPath(); for (let i = -16; i <= 16; i++) { ctx.moveTo(X(.5) + i * Uu * 3.4, Y(.69)); ctx.lineTo(X(.5) + i * Uu * 13, Y(.8)); } ctx.stroke();
+    G.ridge(ctx, { x0, x1, y: Y(.725), amp: Uu * 1.8, freq: 1.5, seed: 37, bottom: B.H, fill: G.lin(ctx, 0, Y(.71), 0, Y(.84), [[0, mixc(c.ch1, c.ch2, .55)], [1, c.ch2]]) });
+    haie(ctx, X(.08), X(.3), Y(.735), Uu * 2.2, mixc(c.haie, c.bas, .22), rh); haie(ctx, X(.74), X(.97), Y(.738), Uu * 2.2, mixc(c.haie, c.bas, .22), rh);
+    nappe(ctx, B, Y(.58), Y(.82), c.brume, n ? .2 : .28);
+    // la butte du moulin
+    ctx = B.couche(.4); const mx = X(.5), my = Y(.708), cm = mixc(c.bati, c.bas, .08), ck = mixc(c.ch2, c.haie, .5);
+    ctx.fillStyle = G.lin(ctx, 0, my - Uu, 0, Y(.86), [[0, mixc(ck, c.bas, .14)], [1, ck]]); ctx.beginPath(); ctx.moveTo(x0, B.H);
+    for (let x = x0; x <= x1 + 4; x += 4) { const d = (x - mx) / (Uu * 26); ctx.lineTo(x, Y(.775) - Uu * 7.6 * Math.exp(-d * d) + (fbm1(x / (Uu * 9), 53, 3) - .5) * Uu * 1.4); } ctx.lineTo(x1 + 4, B.H); ctx.closePath(); ctx.fill();
+    ruban(ctx, lisse(uv([[.46, .805], [.425, .775], [.49, .742], [.497, .712]]), 7), Uu * 3.4, Uu * .9, mixc(c.chemin, ck, .4));
+    const rm = rng("r-moulin"); cloture(ctx, mx - Uu * 19, mx - Uu * 9, my + Uu * 2.2, Uu * 2.2, cm, rm, Uu * 2.8); cloture(ctx, mx + Uu * 9, mx + Uu * 20, my + Uu * 2.4, Uu * 2.2, cm, rm, Uu * 2.8);
+    const Mo = moulin(ctx, mx, my, Uu * 30, cm);
+    if (n) { ctx.save(); ctx.globalCompositeOperation = "lighter"; O.lueursFenetres(ctx, [Mo.fen], c.feu, .95); ctx.restore(); } else { ctx.fillStyle = rgba("#000", .4); ctx.fillRect(Mo.fen[0] - Mo.fen[2] / 2, Mo.fen[1] - Mo.fen[3] / 2, Mo.fen[2], Mo.fen[3]); }
+    nappe(ctx, B, Y(.67), Y(.86), c.brume, n ? .16 : .22);
+    // les ailes tournent à peine ; des corbeaux tournent au-dessus ; la lanterne tremble à la fenêtre
+    B.dyn(.4, (x, t) => { ailes(x, Mo.moyeu[0], Mo.moyeu[1], Uu * 13.5, .35 + t * .045, cm); if (n) G.glow(x, Mo.fen[0], Mo.fen[1], Uu * (4.4 + .6 * Math.sin(t * 5.1) * Math.sin(t * 1.7)), c.feu, .24);
+      for (let i = 0; i < 3; i++) { const a = t * (.22 + i * .05) + i * 2.3; oiseau(x, mx + Math.cos(a) * Uu * (17 + i * 5), Y(.27 + i * .04) + Math.sin(a * 1.3) * Uu * 2.5, Uu * (1.1 + i * .2), cm, Math.sin(t * 5 + i * 2), Math.cos(a) * .15); } });
+    // le champ proche : le chemin qui serpente vers la butte, clôtures, borne
+    ctx = B.couche(.6); terre(ctx, B, .795, 1.4, 61, [[0, mixc(c.ch2, c.bas, .22)], [.35, mixc(c.ch2, c.sol, .5)], [1, c.sol]], 1.1);
+    const cch = mixc(c.chemin, c.ch2, n ? .55 : .4), ccl = mixc(c.bati, c.bas, .12), rc = rng("r-clot");
+    ruban(ctx, lisse(uv([[.412, .885], [.412, .852], [.47, .832], [.4, .814], [.46, .798]]), 7), Uu * 11, Uu * 3, cch);
+    const t1 = cloture(ctx, x0, X(.33), Y(.815), Uu * 3, ccl, rc); cloture(ctx, X(.56), x1, Y(.818), Uu * 3, ccl, rc);
+    if (t1[2]) corbeau(ctx, t1[2][0], t1[2][1], Uu * 1.1, ccl, 1);
+    borne(ctx, X(.535), Y(.838), Uu * 1.1, Uu * 2.6, mixc(c.sol, c.bas, .3));
+    haie(ctx, x0, X(.06), Y(.825), Uu * 6, mixc(c.haie, c.bas, .06), rc); haie(ctx, X(.94), x1, Y(.825), Uu * 7, mixc(c.haie, c.bas, .06), rc);
+    G.fog(ctx, x0, x1, Y(.8), Uu * 6, c.brume, n ? .16 : .22, 14, 14);
+    // la route où l'on se tient : terre battue, ornières, bas-côtés d'herbe
+    ctx = B.couche(.78); terre(ctx, B, .852, 1.2, 67, [[0, mixc(c.sol, c.bas, .14)], [.3, c.sol], [1, mixc(c.sol, "#000", .55)]], 1.4);
+    const cr = mixc(c.chemin, c.sol, n ? .55 : .5), bord = (v, s) => { const q = []; for (let x = x0; x <= x1 + 8; x += 8) q.push([x, Y(v) + (fbm1(x / (Uu * 12), s, 3) - .5) * Uu * 1.4]); return q; };
+    const b1 = bord(.876, 71), b2 = bord(.962, 72); ctx.fillStyle = G.lin(ctx, 0, Y(.87), 0, Y(.97), [[0, cr], [1, mixc(c.chemin, c.sol, .72)]]); ctx.beginPath(); b1.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); b2.reverse().forEach(q => ctx.lineTo(q[0], q[1])); ctx.closePath(); ctx.fill();
+    // l'embranchement vers le moulin : un évasement fondu dans la route
+    const xc = X(.412); ctx.beginPath(); ctx.moveTo(xc - Uu * 17, Y(.886)); ctx.quadraticCurveTo(xc - Uu * 7, Y(.878), xc - Uu * 6, Y(.846)); ctx.lineTo(xc + Uu * 6, Y(.846)); ctx.quadraticCurveTo(xc + Uu * 7, Y(.878), xc + Uu * 17, Y(.886)); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = rgba(c.sol, .45); ctx.lineWidth = Math.max(1, Uu * .35); [.905, .938].forEach((v, k) => { ctx.beginPath(); bord(v, 73 + k).forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.stroke(); });
+    const rhb = rng("r-h"); O.herbe(ctx, x0, xc - Uu * 8, Y(.858), Uu * 2.2, mixc(c.sol, c.bas, .1), rhb, .9); O.herbe(ctx, xc + Uu * 8, x1, Y(.858), Uu * 2.2, mixc(c.sol, c.bas, .1), rhb, .9);
+    B.sol = Y(.9);
+    B.acteurs();
+    // premier plan : la clôture et son corbeau, la borne, l'herbe haute
+    ctx = B.couche(1); const rp = rng("r-pre"), yB = Y(1);
+    const tp = cloture(ctx, x0 - Uu * 2, X(.15), yB + Uu, Uu * 13, c.pre, rp, Uu * 9), perche = tp.reduce((a, q) => Math.abs(q[0] - X(.08)) < Math.abs(a[0] - X(.08)) ? q : a, tp[0]); corbeau(ctx, perche[0], perche[1] - Uu * .3, Uu * 2.6, c.pre, 1);
+    borne(ctx, X(.91), yB + Uu, Uu * 3.2, Uu * 9, c.pre); haie(ctx, X(.95), x1 + Uu * 6, yB + Uu, Uu * 8, c.pre, rp);
+    O.herbe(ctx, x0, x1, yB + Uu, Uu * 7, c.pre, rp, .7);
+    socle(ctx, B, c.pre);
+    G.fog(ctx, x0, x1, Y(.9), Uu * 6, c.brume, n ? .1 : .15, 31, 12);
+    B.part(1, n ? "luciole" : "poussiere", { x: x0, y: Y(.4), w: L, h: Y(.95) - Y(.4) }, { n: n ? 18 : 30 });
+    if (!n) B.part(1, "feuille", { x: x0, y: 0, w: L, h: Y(1) }, { n: 6, col: "#b9853d" });
+  };
 })();

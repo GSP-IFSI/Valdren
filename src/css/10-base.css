@@ -12,6 +12,7 @@
   --ombre:0 18px 50px rgba(0,0,0,.55), 0 2px 0 rgba(255,255,255,.03) inset;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);overscroll-behavior:none;-webkit-text-size-adjust:100%}
 body{font-family:var(--body);color:var(--fg);font-size:15px;line-height:1.48;-webkit-tap-highlight-color:transparent}
 #jeu{position:fixed;inset:0;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
@@ -105,7 +106,7 @@ button:focus-visible,.champ:focus-visible{outline:2px solid var(--gold);outline-
 .act .t{font-weight:600;line-height:1.25}
 .act .d{grid-column:1/-1;font-size:.84rem;color:var(--muted);line-height:1.38}
 .act .d:empty{display:none}
-.act .c{font-family:var(--mono);font-size:.68rem;color:var(--gold);text-align:right;opacity:.9;max-width:150px}
+.act .c{font-family:var(--mono);font-size:.68rem;color:var(--gold);text-align:right;opacity:.9;max-width:58vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .act .c:empty{display:none}
 .btn{background:linear-gradient(180deg,#f0d491,#cfa24e);color:#1a1508;border:0;border-radius:10px;padding:11px 22px;font-weight:600;min-height:44px;box-shadow:0 6px 18px rgba(227,194,122,.18)}
 .btn:hover{filter:brightness(1.07)}.btn:active{transform:scale(.97)}.btn:disabled{opacity:.4;cursor:not-allowed}
@@ -188,6 +189,7 @@ table.cmp td{padding:6px 12px 6px 0;border-top:1px solid var(--line);white-space
 
 /* ---------- messages volants ---------- */
 #toasts{position:absolute;z-index:50;top:calc(var(--hud) + var(--sat) + 6px);left:50%;transform:translateX(-50%);width:min(94%,520px);display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.f-paysage.m-recit #toasts,.f-paysage.m-carte.lieu-ouvert #toasts{left:max(14px,var(--sal));transform:none;width:min(42%,440px);top:calc(var(--hud) + var(--sat) + 70px)}
 .toast{pointer-events:auto;background:rgba(10,15,13,.94);border:1px solid var(--line2);border-left:3px solid var(--gold);border-radius:10px;padding:8px 12px;font-size:.86rem;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:toast-in .35s cubic-bezier(.2,.8,.2,1) both}
 .toast.rum{border-left-color:var(--steel);color:#cfe6f5}.toast.good{border-left-color:var(--ok)}.toast.bad{border-left-color:var(--bad)}.toast.nuit{border-left-color:var(--night)}.toast.info{border-left-color:var(--gold)}
 .toast.sort{animation:toast-out .4s ease both}
